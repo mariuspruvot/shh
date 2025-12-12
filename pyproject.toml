@@ -37,6 +37,7 @@ dev = [
     "pytest-cov>=4.1.0",
     "mypy>=1.8.0",
     "ruff>=0.2.0",
+    "poethepoet>=0.24.0",
 ]
 
 [project.scripts]
@@ -74,3 +75,24 @@ addopts = "-v --strict-markers"
 markers = [
     "e2e: End-to-end tests with real APIs (deselect with '-m \"not e2e\"')",
 ]
+
+[tool.poe.tasks]
+# Testing
+test = "pytest"
+test-cov = "pytest --cov=shh --cov-report=html --cov-report=term"
+test-unit = "pytest tests/unit"
+test-integration = "pytest tests/integration"
+test-no-e2e = "pytest -m 'not e2e'"
+
+# Code quality
+lint = "ruff check ."
+lint-fix = "ruff check . --fix"
+type = "mypy --strict shh/"
+format = "ruff format ."
+
+# Combined checks
+check = ["type", "lint", "test"]
+fix = ["lint-fix", "format"]
+
+# Development
+clean = "rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage"
