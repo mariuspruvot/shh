@@ -1,6 +1,6 @@
 # Project-specific
 .roadmap.md
-
+CLAUDE.md
 # Python
 __pycache__/
 *.py[cod]

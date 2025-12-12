@@ -29,11 +29,11 @@ shh
 
 ## Features
 
-- <� **Record** from microphone or transcribe files
-- > **Format** with AI (casual, business, or neutral)
-- < **Translate** to any language
-- =� **Copy** to clipboard automatically
-- � **Fast** async architecture
+- 🎤 **Record** from microphone or transcribe files
+- ✨ **Format** with AI (casual, business, or neutral)
+- 🌍 **Translate** to any language
+- 📋 **Copy** to clipboard automatically
+- ⚡ **Fast** async architecture
 
 ## Usage
 
@@ -56,8 +56,8 @@ shh transcribe audio.mp3
 
 ## Tech Stack
 
-Python 3.11+ " OpenAI Whisper " PydanticAI " Typer " Rich
+Python 3.11+ • OpenAI Whisper • PydanticAI • Typer • Rich
 
 ---
 
-Built with d for developers who live in the terminal
+Built with ❤️ for developers who live in the terminal
