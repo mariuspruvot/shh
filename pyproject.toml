@@ -27,6 +27,7 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "platformdirs>=4.0.0",
     "typer>=0.20.0",
+    "ipython>=9.8.0",
 ]
 
 [project.optional-dependencies]
