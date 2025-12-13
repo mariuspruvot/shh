@@ -39,6 +39,7 @@ dev = [
     "mypy>=1.8.0",
     "ruff>=0.2.0",
     "poethepoet>=0.24.0",
+    "scipy-stubs>=1.11.0",
 ]
 
 [project.scripts]
@@ -64,7 +65,9 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "UP", "ANN", "ASYNC", "S", "B", "A", "C4", "RET", "SIM"]
-ignore = ["ANN101", "ANN102"]  # Missing type annotation for self/cls
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101"]  # Allow asserts in tests
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -97,3 +100,8 @@ fix = ["lint-fix", "format"]
 
 # Development
 clean = "rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage"
+
+[dependency-groups]
+dev = [
+    "scipy-stubs>=1.16.3.3",
+]

@@ -16,6 +16,10 @@ class AudioRecordingError(ShhError):
     """Raised when there is an audio recording issue."""
 
 
+class AudioProcessingError(ShhError):
+    """Raised when there is an error in audio processing."""
+
+
 class TranscriptionError(ShhError):
     """Raised when there is an error during transcription."""
 

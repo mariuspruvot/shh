@@ -18,8 +18,8 @@ class WhisperModel(StrEnum):
 
 
 class Settings(BaseSettings):
-    """Application settings with environment variable support & config file loading.
-
+    """
+    Application settings with environment variable support & config file loading.
     Priority: CLI flags > environment > config file > defaults
     """
 
