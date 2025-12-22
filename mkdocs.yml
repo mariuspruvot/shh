@@ -1,0 +1,95 @@
+site_name: shh
+site_description: Voice transcription CLI powered by OpenAI Whisper
+site_author: Your Name
+site_url: https://mpruvot.github.io/shh/
+repo_name: mpruvot/shh
+repo_url: https://github.com/mpruvot/shh
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  logo: assets/shh-logo.png
+  favicon: assets/shh-logo.png
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - toc.follow
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+nav:
+  - Getting Started:
+    - index.md
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quickstart.md
+  - User Guide:
+    - Commands: user-guide/commands.md
+    - Configuration: user-guide/configuration.md
+    - Formatting Styles: user-guide/styles.md
+    - Translation: user-guide/translation.md
+  - API Reference:
+    - Core: api-reference/core.md
+    - Adapters: api-reference/adapters.md
+    - CLI: api-reference/cli.md
+  - Architecture:
+    - Overview: architecture/overview.md
+    - Design Decisions: architecture/design-decisions.md
+    - Testing: architecture/testing.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/mpruvot/shh
