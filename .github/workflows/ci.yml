@@ -34,13 +34,5 @@ jobs:
       - name: Run linting
         run: uv run poe lint
 
-      - name: Run tests with coverage
-        run: uv run poe test-cov
-
-      - name: Upload coverage to Codecov
-        if: success()
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
-          fail_ci_if_error: false
+      - name: Run tests
+        run: uv run poe test
