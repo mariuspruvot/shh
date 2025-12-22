@@ -1,31 +1,20 @@
-<div align="center">
-  <img src="assets/shh-logo.png" alt="shh logo" width="200"/>
+# shh
 
-  # shh
+Voice transcription CLI using OpenAI Whisper.
 
-  **Voice transcription CLI powered by OpenAI Whisper**
-
-  Record, transcribe, format. All from your terminal.
-
-  [![CI](https://github.com/mpruvot/shh/actions/workflows/ci.yml/badge.svg)](https://github.com/mpruvot/shh/actions/workflows/ci.yml)
-  [![codecov](https://codecov.io/gh/mpruvot/shh/branch/main/graph/badge.svg)](https://codecov.io/gh/mpruvot/shh)
-  [![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://www.python.org/downloads/)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-  [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
-
-</div>
+[![CI](https://github.com/mpruvot/shh/actions/workflows/ci.yml/badge.svg)](https://github.com/mpruvot/shh/actions/workflows/ci.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 
 ---
 
 ## Features
 
-- 🎤 **Record** from microphone with a single command
-- 🎯 **Press Enter to stop** - simple, intuitive control
-- ✨ **AI Formatting** - casual, business, or neutral styles
-- 🌍 **Translation** - transcribe and translate to any language
-- 📋 **Auto-copy** - results instantly in your clipboard
-- ⚡ **Async** - non-blocking architecture for responsive UX
-- 🎨 **Rich UI** - beautiful terminal output with live progress
+- Record from microphone (press Enter to stop)
+- Format with AI (casual, business, neutral)
+- Translate to any language
+- Auto-copy to clipboard
+- Async architecture
+- Live progress display
 
 ## Quick Start
 
@@ -132,12 +121,12 @@ export SHH_DEFAULT_STYLE="casual"
 
 ## Tech Stack
 
-- **Python 3.11+** - Modern async/await patterns
-- **OpenAI Whisper** - State-of-the-art speech recognition
-- **PydanticAI** - Type-safe AI agent framework
-- **Typer** - Elegant CLI framework
-- **Rich** - Beautiful terminal formatting
-- **sounddevice** - Cross-platform audio recording
+- Python 3.11+ (async/await)
+- OpenAI Whisper (transcription)
+- PydanticAI (formatting)
+- Typer (CLI)
+- Rich (terminal UI)
+- sounddevice (audio recording)
 
 ## Development
 
@@ -158,28 +147,22 @@ uv run poe format
 uv run poe check
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed development guidelines.
-
 ## Architecture
 
-**shh** follows a pragmatic layered architecture:
+Three layers: CLI → Core → Adapters
 
 ```
-CLI Layer (Typer)     → User interaction, commands
-    ↓
-Core Layer            → Business logic, orchestration
-    ↓
-Adapters Layer        → External APIs, hardware, clipboard
+CLI        → Commands, user interaction
+Core       → Business logic
+Adapters   → APIs, audio, clipboard
 ```
 
-**Dependency Rule**: CLI → Core → Adapters (unidirectional flow)
-
-See the [Architecture Documentation](docs/architecture.md) for detailed design decisions.
+See [docs/architecture.md](docs/architecture.md) for details.
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) file for details.
+MIT
 
 ## Contributing
 
-Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
