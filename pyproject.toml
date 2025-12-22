@@ -81,6 +81,9 @@ addopts = "-v --strict-markers"
 markers = [
     "e2e: End-to-end tests with real APIs (deselect with '-m \"not e2e\"')",
 ]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
 
 [tool.poe.tasks]
 # Testing
