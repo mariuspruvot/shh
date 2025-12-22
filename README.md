@@ -2,8 +2,6 @@
 
 Voice transcription CLI using OpenAI Whisper.
 
-[![CI](https://github.com/mariuspruvot/shh/actions/workflows/ci.yml/badge.svg)](https://github.com/mariuspruvot/shh/actions/workflows/ci.yml)
-
 Python 3.11+
 
 ---
