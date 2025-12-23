@@ -8,8 +8,8 @@ edit_uri: edit/main/docs/
 
 theme:
   name: material
-  icon:
-    logo: material/microphone
+  logo: assets/shh-logo.png
+  favicon: assets/shh-logo.png
   palette:
     # Light mode
     - media: "(prefers-color-scheme: light)"
@@ -39,7 +39,9 @@ theme:
     - search.highlight
     - content.code.copy
     - content.code.annotate
+    - content.tabs.link
     - toc.follow
+    - announce.dismiss
 
 plugins:
   - search
