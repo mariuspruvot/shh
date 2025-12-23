@@ -13,7 +13,9 @@ from shh.core.styles import TranscriptionStyle
 console = Console()
 
 # Create a sub-app for config commands
-config_app = typer.Typer(help="Manage configuration settings")
+config_app = typer.Typer(
+    help="Manage configuration settings (show, get, set, reset, edit)"
+)
 
 
 # Valid settings keys for validation

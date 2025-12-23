@@ -23,7 +23,11 @@ Examples:
   shh --translate English          Transcribe and translate to English
   shh setup                        Configure your OpenAI API key
   shh config show                  View current configuration
+  shh config edit                  Open config file in $EDITOR
   shh config set default_style casual  Set default formatting style
+
+\b
+For more config options, run: shh config --help
 """,
     no_args_is_help=False,  # Allow running 'shh' without args (default command)
     rich_markup_mode="markdown",
