@@ -32,6 +32,10 @@ class Settings(BaseSettings):
 
     openai_api_key: str | None = Field(default=None)
     default_style: TranscriptionStyle = Field(default=TranscriptionStyle.NEUTRAL)
+    default_translation_language: str | None = Field(
+        default=None,
+        description="Default language for translation (e.g., 'English', 'French', 'Spanish')",
+    )
     show_progress: bool = Field(default=True)
     whisper_model: WhisperModel = Field(default=WhisperModel.WHISPER_1)
     default_output: list[str] = Field(default_factory=lambda: ["clipboard", "stdout"])

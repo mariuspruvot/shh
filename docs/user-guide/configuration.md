@@ -66,6 +66,30 @@ shh --style business
 
 See [Formatting Styles](styles.md) for details on each style.
 
+### `default_translation_language`
+
+**Type:** String
+**Options:** Any language name (e.g., `English`, `French`, `Spanish`)
+**Default:** None
+
+Default language to translate transcriptions to. When set, all recordings are automatically translated to this language unless overridden with `--translate`.
+
+```bash
+# Set default translation language
+shh config set default_translation_language English
+
+# Now all recordings auto-translate
+shh
+
+# Override when needed
+shh --translate French
+
+# Clear default translation
+shh config set default_translation_language none
+```
+
+See [Translation](translation.md) for details on supported languages.
+
 ### `show_progress`
 
 **Type:** Boolean
@@ -115,6 +139,7 @@ All settings can be configured via environment variables with the `SHH_` prefix:
 ```bash
 export SHH_OPENAI_API_KEY="sk-..."
 export SHH_DEFAULT_STYLE="casual"
+export SHH_DEFAULT_TRANSLATION_LANGUAGE="English"
 export SHH_SHOW_PROGRESS="true"
 export SHH_WHISPER_MODEL="whisper-1"
 ```
@@ -129,6 +154,7 @@ Here's what a typical `config.json` looks like:
 {
   "openai_api_key": "sk-proj-...",
   "default_style": "casual",
+  "default_translation_language": "English",
   "show_progress": true,
   "whisper_model": "whisper-1"
 }

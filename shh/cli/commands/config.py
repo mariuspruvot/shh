@@ -19,6 +19,7 @@ config_app = typer.Typer(help="Manage configuration settings")
 # Valid settings keys for validation
 VALID_KEYS = {
     "default_style": list(TranscriptionStyle),
+    "default_translation_language": None,  # Freeform text, no validation
     "show_progress": [True, False],
     "whisper_model": list(WhisperModel),
 }
@@ -47,6 +48,10 @@ def config_show() -> None:
 
     table.add_row("openai_api_key", api_key_display)
     table.add_row("default_style", str(settings.default_style))
+    table.add_row(
+        "default_translation_language",
+        settings.default_translation_language or "[dim]None[/dim]",
+    )
     table.add_row("show_progress", str(settings.show_progress))
     table.add_row("whisper_model", str(settings.whisper_model))
     table.add_row("default_output", ", ".join(settings.default_output))
@@ -106,7 +111,7 @@ def config_set(key: str, value: str) -> None:
         raise typer.Exit(code=1)
 
     # Validate and convert value
-    typed_value: TranscriptionStyle | WhisperModel | bool | str
+    typed_value: TranscriptionStyle | WhisperModel | bool | str | None
 
     if key == "default_style":
         try:
@@ -116,6 +121,9 @@ def config_set(key: str, value: str) -> None:
             valid_styles = [s.value for s in TranscriptionStyle]
             console.print(f"[dim]Valid styles: {', '.join(valid_styles)}[/dim]")
             raise typer.Exit(code=1) from e
+    elif key == "default_translation_language":
+        # Support clearing the value with special strings
+        typed_value = None if value.lower() in ("none", "null", "") else value
     elif key == "show_progress":
         if value.lower() not in ("true", "false"):
             console.print("[red]Error: show_progress must be 'true' or 'false'[/red]")

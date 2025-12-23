@@ -68,3 +68,6 @@ Thumbs.db
 *.m4a
 tmp/
 temp/
+
+# MkDocs build output
+site/

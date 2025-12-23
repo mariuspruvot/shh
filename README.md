@@ -85,6 +85,12 @@ shh --translate English
 
 # Combine formatting and translation
 shh --style business --translate French
+
+# Set default translation language
+shh config set default_translation_language English
+
+# Now recordings auto-translate without --translate flag
+shh
 ```
 
 ### Configuration
@@ -96,11 +102,17 @@ shh config show
 # Set default style
 shh config set default_style casual
 
+# Set default translation language
+shh config set default_translation_language English
+
 # Get specific setting
 shh config get default_style
 
-# Reset to defaults
+# Reset to defaults (preserves API key)
 shh config reset
+
+# Edit config file directly in $EDITOR
+shh config edit
 ```
 
 ## Configuration File
@@ -116,6 +128,7 @@ You can also use environment variables with the `SHH_` prefix:
 ```bash
 export SHH_OPENAI_API_KEY="sk-..."
 export SHH_DEFAULT_STYLE="casual"
+export SHH_DEFAULT_TRANSLATION_LANGUAGE="English"
 ```
 
 ## Tech Stack

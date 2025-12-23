@@ -2,6 +2,7 @@
 
 import asyncio
 import contextlib
+import logging
 import sys
 
 import pyperclip  # type: ignore[import-untyped]
@@ -16,6 +17,10 @@ from shh.adapters.llm.formatter import format_transcription
 from shh.adapters.whisper.client import transcribe_audio
 from shh.config.settings import Settings
 from shh.core.styles import TranscriptionStyle
+
+# Suppress HTTP request logs
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("openai").setLevel(logging.WARNING)
 
 console = Console()
 
@@ -44,8 +49,9 @@ async def record_command(
         console.print("[dim]Run 'shh setup' to configure your OpenAI API key.[/dim]")
         sys.exit(1)
 
-    # Use provided style or fall back to config default
+    # Use provided options or fall back to config defaults
     formatting_style = style if style is not None else settings.default_style
+    target_language = translate if translate is not None else settings.default_translation_language
 
     # Step 1: Recording
     console.print("\n[bold cyan]Recording...[/bold cyan]")
@@ -109,9 +115,9 @@ async def record_command(
         )
 
         # Step 4: Format/Translate (if requested)
-        if formatting_style != TranscriptionStyle.NEUTRAL or translate:
-            if translate:
-                console.print(f"[cyan]Formatting and translating to {translate}...[/cyan]")
+        if formatting_style != TranscriptionStyle.NEUTRAL or target_language:
+            if target_language:
+                console.print(f"[cyan]Formatting and translating to {target_language}...[/cyan]")
             else:
                 console.print(f"[cyan]Formatting ({formatting_style})...[/cyan]")
 
@@ -119,7 +125,7 @@ async def record_command(
                 transcription,
                 style=formatting_style,
                 api_key=settings.openai_api_key,
-                target_language=translate,
+                target_language=target_language,
             )
             final_text = formatted.text
         else:

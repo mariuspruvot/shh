@@ -14,6 +14,23 @@ shh --translate English
 shh --translate Spanish
 ```
 
+## Default Translation Language
+
+Set a default translation language to avoid typing `--translate` every time:
+
+```bash
+# Set default translation language
+shh config set default_translation_language English
+
+# Now all recordings auto-translate to English
+shh
+
+# Override default when needed
+shh --translate French
+```
+
+This is useful when you frequently translate to the same language.
+
 ## Supported Languages
 
 You can translate to **any language supported by OpenAI's GPT models**. Common examples:
