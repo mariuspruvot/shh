@@ -74,6 +74,7 @@ build-backend = "uv_build"
 
 [tool.uv.build-backend]
 module-root = ""
+module-name = "shh"
 
 [tool.mypy]
 strict = true
