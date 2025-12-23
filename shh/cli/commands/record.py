@@ -54,8 +54,7 @@ async def record_command(
     target_language = translate if translate is not None else settings.default_translation_language
 
     # Step 1: Recording
-    console.print("\n[bold cyan]Recording...[/bold cyan]")
-    console.print("[dim]Press Enter to stop recording[/dim]\n")
+    console.print()
 
     try:
         async with AudioRecorder() as recorder:
@@ -72,7 +71,8 @@ async def record_command(
                     progress = Text()
                     progress.append("Recording... ", style="bold green")
                     progress.append(f"{elapsed:.1f}s ", style="cyan")
-                    progress.append(f"/ {max_duration:.0f}s", style="dim")
+                    progress.append(f"/ {max_duration:.0f}s ", style="dim")
+                    progress.append("[Press Enter to stop]", style="dim")
 
                     live.update(progress)
                     live.refresh()
