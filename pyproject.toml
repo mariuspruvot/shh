@@ -1,5 +1,5 @@
 [project]
-name = "shh"
+name = "shh-cli"
 version = "0.1.0"
 description = "Voice transcription CLI powered by OpenAI Whisper"
 requires-python = ">=3.11"
