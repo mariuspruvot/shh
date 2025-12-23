@@ -712,6 +712,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#default-translation-language" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default Translation Language
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#supported-languages" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1410,6 +1421,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#default-translation-language" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default Translation Language
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#supported-languages" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1794,6 +1816,18 @@
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Transcribe English audio and translate to Spanish</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>shh<span class="w"> </span>--translate<span class="w"> </span>Spanish
 </code></pre></div>
+<h2 id="default-translation-language">Default Translation Language</h2>
+<p>Set a default translation language to avoid typing <code>--translate</code> every time:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Set default translation language</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>shh<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>default_translation_language<span class="w"> </span>English
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Now all recordings auto-translate to English</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>shh
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># Override default when needed</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>shh<span class="w"> </span>--translate<span class="w"> </span>French
+</code></pre></div>
+<p>This is useful when you frequently translate to the same language.</p>
 <h2 id="supported-languages">Supported Languages</h2>
 <p>You can translate to <strong>any language supported by OpenAI's GPT models</strong>. Common examples:</p>
 <ul>
@@ -1823,11 +1857,11 @@
 </div>
 <h2 id="combining-with-styles">Combining with Styles</h2>
 <p>Translation works seamlessly with formatting styles:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Casual translation</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>shh<span class="w"> </span>--style<span class="w"> </span>casual<span class="w"> </span>--translate<span class="w"> </span>French
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Business translation</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>shh<span class="w"> </span>--style<span class="w"> </span>business<span class="w"> </span>--translate<span class="w"> </span>English
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Casual translation</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>shh<span class="w"> </span>--style<span class="w"> </span>casual<span class="w"> </span>--translate<span class="w"> </span>French
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Business translation</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>shh<span class="w"> </span>--style<span class="w"> </span>business<span class="w"> </span>--translate<span class="w"> </span>English
 </code></pre></div>
 <p>The order of operations:</p>
 <ol>
@@ -1839,23 +1873,23 @@
 <h2 id="examples">Examples</h2>
 <h3 id="meeting-notes-french-english">Meeting Notes (French → English)</h3>
 <p>Record a French meeting and get English business-formatted notes:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>shh<span class="w"> </span>--style<span class="w"> </span>business<span class="w"> </span>--translate<span class="w"> </span>English
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>shh<span class="w"> </span>--style<span class="w"> </span>business<span class="w"> </span>--translate<span class="w"> </span>English
 </code></pre></div>
 <h3 id="voice-memo-english-spanish">Voice Memo (English → Spanish)</h3>
 <p>Quick personal note translated to Spanish:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>shh<span class="w"> </span>--style<span class="w"> </span>casual<span class="w"> </span>--translate<span class="w"> </span>Spanish
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>shh<span class="w"> </span>--style<span class="w"> </span>casual<span class="w"> </span>--translate<span class="w"> </span>Spanish
 </code></pre></div>
 <h3 id="interview-transcription-chinese-english">Interview Transcription (Chinese → English)</h3>
 <p>Transcribe a Chinese interview to English:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>shh<span class="w"> </span>--translate<span class="w"> </span>English
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>shh<span class="w"> </span>--translate<span class="w"> </span>English
 </code></pre></div>
 <h2 id="language-names">Language Names</h2>
 <p>You can use various forms of language names:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># These all work</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>shh<span class="w"> </span>--translate<span class="w"> </span>English
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>shh<span class="w"> </span>--translate<span class="w"> </span>french
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>shh<span class="w"> </span>--translate<span class="w"> </span>Español
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>shh<span class="w"> </span>--translate<span class="w"> </span>中文
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># These all work</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>shh<span class="w"> </span>--translate<span class="w"> </span>English
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>shh<span class="w"> </span>--translate<span class="w"> </span>french
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>shh<span class="w"> </span>--translate<span class="w"> </span>Español
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>shh<span class="w"> </span>--translate<span class="w"> </span>中文
 </code></pre></div>
 <p>The AI model understands common language names in multiple forms.</p>
 <h2 id="quality-and-accuracy">Quality and Accuracy</h2>
@@ -1884,11 +1918,11 @@
 </ul>
 <h3 id="specify-style">Specify Style</h3>
 <p>Combining styles with translation produces better results:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># ✅ Good - clear intent</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>shh<span class="w"> </span>--style<span class="w"> </span>business<span class="w"> </span>--translate<span class="w"> </span>English
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># ⚠️ Acceptable - but less polished</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>shh<span class="w"> </span>--translate<span class="w"> </span>English
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># ✅ Good - clear intent</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>shh<span class="w"> </span>--style<span class="w"> </span>business<span class="w"> </span>--translate<span class="w"> </span>English
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># ⚠️ Acceptable - but less polished</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>shh<span class="w"> </span>--translate<span class="w"> </span>English
 </code></pre></div>
 <h3 id="review-output">Review Output</h3>
 <p>AI translation is good but not perfect. Review important translations:</p>
@@ -1900,23 +1934,23 @@
 <h2 id="common-use-cases">Common Use Cases</h2>
 <h3 id="multilingual-teams">Multilingual Teams</h3>
 <p>Team members speak different languages:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># French speaker recording notes for English team</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>shh<span class="w"> </span>--style<span class="w"> </span>business<span class="w"> </span>--translate<span class="w"> </span>English
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># French speaker recording notes for English team</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>shh<span class="w"> </span>--style<span class="w"> </span>business<span class="w"> </span>--translate<span class="w"> </span>English
 </code></pre></div>
 <h3 id="learning-languages">Learning Languages</h3>
 <p>Practice speaking and get translations:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Practice Spanish, get English translation to check understanding</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>shh<span class="w"> </span>--translate<span class="w"> </span>English
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Practice Spanish, get English translation to check understanding</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>shh<span class="w"> </span>--translate<span class="w"> </span>English
 </code></pre></div>
 <h3 id="content-creation">Content Creation</h3>
 <p>Transcribe and translate interviews, podcasts, or videos:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Transcribe Japanese podcast to English</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>shh<span class="w"> </span>--translate<span class="w"> </span>English
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Transcribe Japanese podcast to English</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>shh<span class="w"> </span>--translate<span class="w"> </span>English
 </code></pre></div>
 <h3 id="travel-notes">Travel Notes</h3>
 <p>Quick voice notes while traveling, translated to your native language:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Record in local language, translate to English</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>shh<span class="w"> </span>--translate<span class="w"> </span>English
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Record in local language, translate to English</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>shh<span class="w"> </span>--translate<span class="w"> </span>English
 </code></pre></div>
 <h2 id="technical-details">Technical Details</h2>
 <h3 id="api-calls">API Calls</h3>

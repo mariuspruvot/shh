@@ -701,6 +701,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#default_translation_language" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        default_translation_language
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#show_progress" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1366,6 +1377,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#default_translation_language" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        default_translation_language
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#show_progress" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1656,19 +1678,37 @@
 <a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>shh<span class="w"> </span>--style<span class="w"> </span>business
 </code></pre></div>
 <p>See <a href="../styles/">Formatting Styles</a> for details on each style.</p>
+<h3 id="default_translation_language"><code>default_translation_language</code></h3>
+<p><strong>Type:</strong> String
+<strong>Options:</strong> Any language name (e.g., <code>English</code>, <code>French</code>, <code>Spanish</code>)
+<strong>Default:</strong> None</p>
+<p>Default language to translate transcriptions to. When set, all recordings are automatically translated to this language unless overridden with <code>--translate</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Set default translation language</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>shh<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>default_translation_language<span class="w"> </span>English
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Now all recordings auto-translate</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>shh
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># Override when needed</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>shh<span class="w"> </span>--translate<span class="w"> </span>French
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1"># Clear default translation</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>shh<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>default_translation_language<span class="w"> </span>none
+</code></pre></div>
+<p>See <a href="../translation/">Translation</a> for details on supported languages.</p>
 <h3 id="show_progress"><code>show_progress</code></h3>
 <p><strong>Type:</strong> Boolean
 <strong>Options:</strong> <code>true</code>, <code>false</code>
 <strong>Default:</strong> <code>true</code></p>
 <p>Show live progress indicator while recording.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Set via config command</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>shh<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>show_progress<span class="w"> </span><span class="nb">false</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Set via environment variable</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHH_SHOW_PROGRESS</span><span class="o">=</span><span class="nb">false</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Set via config command</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>shh<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>show_progress<span class="w"> </span><span class="nb">false</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Set via environment variable</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHH_SHOW_PROGRESS</span><span class="o">=</span><span class="nb">false</span>
 </code></pre></div>
 <p>When enabled, you'll see:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>🔴 Recording... 12.3s [Press Enter to stop]
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>🔴 Recording... 12.3s [Press Enter to stop]
 </code></pre></div></p>
 <p>When disabled, recording is silent until you press Enter.</p>
 <h3 id="whisper_model"><code>whisper_model</code></h3>
@@ -1676,11 +1716,11 @@
 <strong>Options:</strong> <code>whisper-1</code>
 <strong>Default:</strong> <code>whisper-1</code></p>
 <p>OpenAI Whisper model to use for transcription.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Set via config command</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>shh<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>whisper_model<span class="w"> </span>whisper-1
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Set via environment variable</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHH_WHISPER_MODEL</span><span class="o">=</span>whisper-1
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Set via config command</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>shh<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>whisper_model<span class="w"> </span>whisper-1
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Set via environment variable</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHH_WHISPER_MODEL</span><span class="o">=</span>whisper-1
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Model Availability</p>
@@ -1688,33 +1728,35 @@
 </div>
 <h2 id="environment-variables">Environment Variables</h2>
 <p>All settings can be configured via environment variables with the <code>SHH_</code> prefix:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHH_OPENAI_API_KEY</span><span class="o">=</span><span class="s2">&quot;sk-...&quot;</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHH_DEFAULT_STYLE</span><span class="o">=</span><span class="s2">&quot;casual&quot;</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHH_SHOW_PROGRESS</span><span class="o">=</span><span class="s2">&quot;true&quot;</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHH_WHISPER_MODEL</span><span class="o">=</span><span class="s2">&quot;whisper-1&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHH_OPENAI_API_KEY</span><span class="o">=</span><span class="s2">&quot;sk-...&quot;</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHH_DEFAULT_STYLE</span><span class="o">=</span><span class="s2">&quot;casual&quot;</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHH_DEFAULT_TRANSLATION_LANGUAGE</span><span class="o">=</span><span class="s2">&quot;English&quot;</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHH_SHOW_PROGRESS</span><span class="o">=</span><span class="s2">&quot;true&quot;</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHH_WHISPER_MODEL</span><span class="o">=</span><span class="s2">&quot;whisper-1&quot;</span>
 </code></pre></div>
 <p>Add these to your shell profile (<code>~/.bashrc</code>, <code>~/.zshrc</code>, etc.) for persistence.</p>
 <h2 id="example-configuration-file">Example Configuration File</h2>
 <p>Here's what a typical <code>config.json</code> looks like:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">{</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">&quot;openai_api_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sk-proj-...&quot;</span><span class="p">,</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">&quot;default_style&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;casual&quot;</span><span class="p">,</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span><span class="nt">&quot;show_progress&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span><span class="nt">&quot;whisper_model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;whisper-1&quot;</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">{</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">&quot;openai_api_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sk-proj-...&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="nt">&quot;default_style&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;casual&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="nt">&quot;default_translation_language&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;English&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span><span class="nt">&quot;show_progress&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span><span class="nt">&quot;whisper_model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;whisper-1&quot;</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="p">}</span>
 </code></pre></div>
 <h2 id="managing-configuration">Managing Configuration</h2>
 <h3 id="view-current-config">View Current Config</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>shh<span class="w"> </span>config<span class="w"> </span>show
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>shh<span class="w"> </span>config<span class="w"> </span>show
 </code></pre></div>
 <h3 id="get-single-setting">Get Single Setting</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>shh<span class="w"> </span>config<span class="w"> </span>get<span class="w"> </span>default_style
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>shh<span class="w"> </span>config<span class="w"> </span>get<span class="w"> </span>default_style
 </code></pre></div>
 <h3 id="update-setting">Update Setting</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>shh<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>default_style<span class="w"> </span>business
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>shh<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>default_style<span class="w"> </span>business
 </code></pre></div>
 <h3 id="reset-to-defaults">Reset to Defaults</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>shh<span class="w"> </span>config<span class="w"> </span>reset
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>shh<span class="w"> </span>config<span class="w"> </span>reset
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Reset Warning</p>
@@ -1723,43 +1765,43 @@
 <h2 id="common-configurations">Common Configurations</h2>
 <h3 id="casual-user">Casual User</h3>
 <p>Always use casual formatting, hide progress:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>shh<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>default_style<span class="w"> </span>casual
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>shh<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>show_progress<span class="w"> </span><span class="nb">false</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>shh<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>default_style<span class="w"> </span>casual
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>shh<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>show_progress<span class="w"> </span><span class="nb">false</span>
 </code></pre></div>
 <p>Or in environment variables:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHH_DEFAULT_STYLE</span><span class="o">=</span>casual
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHH_SHOW_PROGRESS</span><span class="o">=</span><span class="nb">false</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHH_DEFAULT_STYLE</span><span class="o">=</span>casual
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SHH_SHOW_PROGRESS</span><span class="o">=</span><span class="nb">false</span>
 </code></pre></div>
 <h3 id="business-user">Business User</h3>
 <p>Professional formatting by default:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>shh<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>default_style<span class="w"> </span>business
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>shh<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>default_style<span class="w"> </span>business
 </code></pre></div>
 <h3 id="developer-testing">Developer Testing</h3>
 <p>Use environment variables to avoid modifying config:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nv">SHH_DEFAULT_STYLE</span><span class="o">=</span>casual<span class="w"> </span>shh
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nv">SHH_DEFAULT_STYLE</span><span class="o">=</span>casual<span class="w"> </span>shh
 </code></pre></div>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h3 id="config-file-not-found">Config file not found</h3>
 <p>If you see "No API key found", run:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>shh<span class="w"> </span>setup
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>shh<span class="w"> </span>setup
 </code></pre></div>
 <p>This creates the config file and prompts for your API key.</p>
 <h3 id="permission-errors">Permission errors</h3>
 <p>If you can't write to the config file, check directory permissions:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># macOS/Linux</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>ls<span class="w"> </span>-la<span class="w"> </span>~/Library/Application<span class="se">\ </span>Support/shh/<span class="w">  </span><span class="c1"># macOS</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>ls<span class="w"> </span>-la<span class="w"> </span>~/.config/shh/<span class="w">  </span><span class="c1"># Linux</span>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="c1"># Windows</span>
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>dir<span class="w"> </span>%APPDATA%<span class="se">\s</span>hh<span class="se">\</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># macOS/Linux</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>ls<span class="w"> </span>-la<span class="w"> </span>~/Library/Application<span class="se">\ </span>Support/shh/<span class="w">  </span><span class="c1"># macOS</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>ls<span class="w"> </span>-la<span class="w"> </span>~/.config/shh/<span class="w">  </span><span class="c1"># Linux</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="c1"># Windows</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>dir<span class="w"> </span>%APPDATA%<span class="se">\s</span>hh<span class="se">\</span>
 </code></pre></div>
 <h3 id="invalid-values">Invalid values</h3>
 <p>If you manually edit <code>config.json</code> and enter invalid values, shh will show an error:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>Error: Invalid style &#39;foo&#39;
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>Valid styles: neutral, casual, business
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>Error: Invalid style &#39;foo&#39;
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>Valid styles: neutral, casual, business
 </code></pre></div>
 <p>Fix by running:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>shh<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>default_style<span class="w"> </span>neutral
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>shh<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>default_style<span class="w"> </span>neutral
 </code></pre></div>
 <h2 id="next-steps">Next Steps</h2>
 <ul>
