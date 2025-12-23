@@ -17,17 +17,22 @@ app = typer.Typer(
 Record audio, transcribe with Whisper, and optionally format or translate the output.
 
 \b
-Examples:
-  shh                              Record and transcribe (press Enter to stop)
-  shh --style business             Transcribe with professional formatting
-  shh --translate English          Transcribe and translate to English
-  shh setup                        Configure your OpenAI API key
-  shh config show                  View current configuration
-  shh config edit                  Open config file in $EDITOR
-  shh config set default_style casual  Set default formatting style
+Recording Examples:
+  shh                              Quick recording (press Enter to stop)
+  shh -s casual                    Record with casual formatting
+  shh -s business                  Record with professional formatting
+  shh -t English                   Record and translate to English
+  shh -s business -t French        Business format + translate to French
 
 \b
-For more config options, run: shh config --help
+Configuration Commands:
+  shh setup                        Configure OpenAI API key
+  shh config show                  Display all settings
+  shh config edit                  Open config JSON in $EDITOR
+  shh config get default_style     Get a specific setting value
+  shh config set default_style casual            Set default formatting
+  shh config set default_translation_language English   Set auto-translate
+  shh config reset                 Reset to defaults (keeps API key)
 """,
     no_args_is_help=False,  # Allow running 'shh' without args (default command)
     rich_markup_mode="markdown",
