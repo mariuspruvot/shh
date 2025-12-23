@@ -12,28 +12,7 @@ from shh.core.styles import TranscriptionStyle
 
 app = typer.Typer(
     name="shh",
-    help="""Voice transcription CLI powered by OpenAI Whisper.
-
-Record audio, transcribe with Whisper, and optionally format or translate the output.
-
-\b
-Recording Examples:
-  shh                              Quick recording (press Enter to stop)
-  shh -s casual                    Record with casual formatting
-  shh -s business                  Record with professional formatting
-  shh -t English                   Record and translate to English
-  shh -s business -t French        Business format + translate to French
-
-\b
-Configuration Commands:
-  shh setup                        Configure OpenAI API key
-  shh config show                  Display all settings
-  shh config edit                  Open config JSON in $EDITOR
-  shh config get default_style     Get a specific setting value
-  shh config set default_style casual            Set default formatting
-  shh config set default_translation_language English   Set auto-translate
-  shh config reset                 Reset to defaults (keeps API key)
-""",
+    help="Voice transcription CLI powered by OpenAI Whisper",
     no_args_is_help=False,  # Allow running 'shh' without args (default command)
     rich_markup_mode="markdown",
 )
@@ -56,10 +35,7 @@ def default_command(
         typer.Option(
             "--style",
             "-s",
-            help=(
-                "Formatting style: neutral (raw), casual (conversational), "
-                "or business (professional)"
-            ),
+            help="Formatting: neutral (raw), casual, or business",
         ),
     ] = None,
     translate: Annotated[
@@ -67,25 +43,11 @@ def default_command(
         typer.Option(
             "--translate",
             "-t",
-            help="Translate to target language (e.g., 'English', 'French', 'Spanish')",
+            help="Translate to language (e.g., English, French)",
         ),
     ] = None,
 ) -> None:
-    """
-    Record audio from microphone and transcribe it.
-
-    \b
-    Press Enter to stop recording (or auto-stop after 5 minutes).
-    Results are automatically copied to clipboard.
-
-    \b
-    Examples:
-      shh                           Quick recording with defaults
-      shh -s casual                 Casual formatting (removes filler words)
-      shh -s business               Professional formatting
-      shh -t English                Transcribe and translate to English
-      shh -s business -t French     Business format + translate to French
-    """
+    """Record audio and transcribe. Press Enter to stop."""
     # If a subcommand was invoked, don't run the default
     if ctx.invoked_subcommand is not None:
         return
