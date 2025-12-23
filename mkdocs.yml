@@ -1,15 +1,15 @@
 site_name: shh
 site_description: Voice transcription CLI powered by OpenAI Whisper
-site_author: Your Name
-site_url: https://mpruvot.github.io/shh/
-repo_name: mpruvot/shh
-repo_url: https://github.com/mpruvot/shh
+site_author: Marius Pruvot
+site_url: https://mariuspruvot.github.io/shh/
+repo_name: mariuspruvot/shh
+repo_url: https://github.com/mariuspruvot/shh
 edit_uri: edit/main/docs/
 
 theme:
   name: material
-  logo: assets/shh-logo.png
-  favicon: assets/shh-logo.png
+  icon:
+    logo: material/microphone
   palette:
     # Light mode
     - media: "(prefers-color-scheme: light)"
@@ -71,14 +71,14 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 nav:
+  - Home: index.md
   - Getting Started:
-    - index.md
     - Installation: getting-started/installation.md
     - Quick Start: getting-started/quickstart.md
   - User Guide:
     - Commands: user-guide/commands.md
     - Configuration: user-guide/configuration.md
-    - Formatting Styles: user-guide/styles.md
+    - Styles: user-guide/styles.md
     - Translation: user-guide/translation.md
   - API Reference:
     - Core: api-reference/core.md

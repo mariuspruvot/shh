@@ -23,12 +23,6 @@ classifiers = [
     "Topic :: Multimedia :: Sound/Audio :: Speech",
     "Topic :: Utilities",
 ]
-
-[project.urls]
-Homepage = "https://mariuspruvot.github.io/shh/"
-Repository = "https://github.com/mariuspruvot/shh"
-Documentation = "https://mariuspruvot.github.io/shh/"
-Issues = "https://github.com/mariuspruvot/shh/issues"
 dependencies = [
     # CLI & UI
     "rich>=13.0.0",
@@ -64,6 +58,12 @@ dev = [
     "mkdocs-material>=9.5.0",
     "mkdocstrings[python]>=0.24.0",
 ]
+
+[project.urls]
+Homepage = "https://mariuspruvot.github.io/shh/"
+Repository = "https://github.com/mariuspruvot/shh"
+Documentation = "https://mariuspruvot.github.io/shh/"
+Issues = "https://github.com/mariuspruvot/shh/issues"
 
 [project.scripts]
 shh = "shh.cli.app:main"
