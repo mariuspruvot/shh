@@ -14,7 +14,7 @@ console = Console()
 
 # Create a sub-app for config commands
 config_app = typer.Typer(
-    help="Manage configuration settings (show, get, set, reset, edit)"
+    help="Manage configuration (wizard, show, get, set, edit, reset)"
 )
 
 
@@ -209,3 +209,64 @@ def config_edit() -> None:
     except FileNotFoundError as e:
         console.print(f"[red]Error: Editor '{editor}' not found[/red]")
         raise typer.Exit(code=1) from e
+
+
+@config_app.command(name="wizard")
+def config_wizard() -> None:
+    """Interactive configuration wizard."""
+    console.print("\n[bold cyan]Configuration Wizard[/bold cyan]\n")
+
+    # Load or create settings
+    settings = Settings.load_from_file() or Settings()
+
+    # API Key (mask if exists)
+    if settings.openai_api_key:
+        console.print(f"[dim]Current API key: sk-***{settings.openai_api_key[-4:]}[/dim]")
+        change_key = typer.confirm("Change API key?", default=False)
+        if change_key:
+            api_key = typer.prompt("OpenAI API key", hide_input=True)
+            settings.openai_api_key = api_key
+    else:
+        api_key = typer.prompt("OpenAI API key", hide_input=True)
+        settings.openai_api_key = api_key
+
+    # Default style
+    console.print("\n[cyan]Formatting Style[/cyan]")
+    console.print("  neutral  - Raw Whisper output")
+    console.print("  casual   - Conversational, removes filler words")
+    console.print("  business - Professional, formal tone")
+    style_input = typer.prompt(
+        "Default style",
+        default=settings.default_style.value,
+        show_default=True,
+    )
+    try:
+        settings.default_style = TranscriptionStyle(style_input)
+    except ValueError:
+        console.print("[yellow]Invalid style, keeping current value[/yellow]")
+
+    # Default translation language
+    console.print("\n[cyan]Translation[/cyan]")
+    current_lang = settings.default_translation_language or "None"
+    console.print(f"[dim]Current: {current_lang}[/dim]")
+    lang_input = typer.prompt(
+        "Default translation language (or 'none' to disable)",
+        default=current_lang,
+        show_default=False,
+    )
+    if lang_input.lower() in ("none", "null", ""):
+        settings.default_translation_language = None
+    else:
+        settings.default_translation_language = lang_input
+
+    # Show progress
+    console.print("\n[cyan]Display Options[/cyan]")
+    settings.show_progress = typer.confirm(
+        "Show recording progress?",
+        default=settings.show_progress,
+    )
+
+    # Save
+    settings.save_to_file()
+    console.print("\n[green]✓ Configuration saved[/green]")
+    console.print(f"[dim]Location: {Settings.get_config_path()}[/dim]\n")
