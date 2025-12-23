@@ -12,8 +12,21 @@ from shh.core.styles import TranscriptionStyle
 
 app = typer.Typer(
     name="shh",
-    help="Voice transcription CLI powered by OpenAI Whisper",
+    help="""Voice transcription CLI powered by OpenAI Whisper.
+
+Record audio, transcribe with Whisper, and optionally format or translate the output.
+
+\b
+Examples:
+  shh                              Record and transcribe (press Enter to stop)
+  shh --style business             Transcribe with professional formatting
+  shh --translate English          Transcribe and translate to English
+  shh setup                        Configure your OpenAI API key
+  shh config show                  View current configuration
+  shh config set default_style casual  Set default formatting style
+""",
     no_args_is_help=False,  # Allow running 'shh' without args (default command)
+    rich_markup_mode="markdown",
 )
 
 # Add config subcommand group
@@ -34,7 +47,10 @@ def default_command(
         typer.Option(
             "--style",
             "-s",
-            help="Formatting style (overrides config default)",
+            help=(
+                "Formatting style: neutral (raw), casual (conversational), "
+                "or business (professional)"
+            ),
         ),
     ] = None,
     translate: Annotated[
@@ -42,14 +58,24 @@ def default_command(
         typer.Option(
             "--translate",
             "-t",
-            help="Target language for translation (e.g., 'English', 'French')",
+            help="Translate to target language (e.g., 'English', 'French', 'Spanish')",
         ),
     ] = None,
 ) -> None:
     """
-    Record audio and transcribe with optional formatting/translation.
+    Record audio from microphone and transcribe it.
 
-    Press Enter to stop recording (max 5 minutes).
+    \b
+    Press Enter to stop recording (or auto-stop after 5 minutes).
+    Results are automatically copied to clipboard.
+
+    \b
+    Examples:
+      shh                           Quick recording with defaults
+      shh -s casual                 Casual formatting (removes filler words)
+      shh -s business               Professional formatting
+      shh -t English                Transcribe and translate to English
+      shh -s business -t French     Business format + translate to French
     """
     # If a subcommand was invoked, don't run the default
     if ctx.invoked_subcommand is not None:
