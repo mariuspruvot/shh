@@ -4,10 +4,31 @@ version = "0.1.0"
 description = "Voice transcription CLI powered by OpenAI Whisper"
 requires-python = ">=3.11"
 authors = [
-    { name = "Your Name", email = "your.email@example.com" }
+    { name = "Marius Pruvot", email = "marius.pruvot@example.com" }
 ]
 readme = "README.md"
 license = { text = "MIT" }
+keywords = ["whisper", "transcription", "voice", "openai", "cli", "speech-to-text"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+    "Topic :: Utilities",
+]
+
+[project.urls]
+Homepage = "https://mariuspruvot.github.io/shh/"
+Repository = "https://github.com/mariuspruvot/shh"
+Documentation = "https://mariuspruvot.github.io/shh/"
+Issues = "https://github.com/mariuspruvot/shh/issues"
 dependencies = [
     # CLI & UI
     "rich>=13.0.0",
