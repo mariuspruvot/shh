@@ -1,55 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://mpruvot.github.io/shh/</loc>
+         <loc>https://mariuspruvot.github.io/shh/</loc>
          <lastmod>2025-12-23</lastmod>
     </url>
     <url>
-         <loc>https://mpruvot.github.io/shh/api-reference/adapters/</loc>
+         <loc>https://mariuspruvot.github.io/shh/api-reference/adapters/</loc>
          <lastmod>2025-12-23</lastmod>
     </url>
     <url>
-         <loc>https://mpruvot.github.io/shh/api-reference/cli/</loc>
+         <loc>https://mariuspruvot.github.io/shh/api-reference/cli/</loc>
          <lastmod>2025-12-23</lastmod>
     </url>
     <url>
-         <loc>https://mpruvot.github.io/shh/api-reference/core/</loc>
+         <loc>https://mariuspruvot.github.io/shh/api-reference/core/</loc>
          <lastmod>2025-12-23</lastmod>
     </url>
     <url>
-         <loc>https://mpruvot.github.io/shh/architecture/design-decisions/</loc>
+         <loc>https://mariuspruvot.github.io/shh/architecture/design-decisions/</loc>
          <lastmod>2025-12-23</lastmod>
     </url>
     <url>
-         <loc>https://mpruvot.github.io/shh/architecture/overview/</loc>
+         <loc>https://mariuspruvot.github.io/shh/architecture/overview/</loc>
          <lastmod>2025-12-23</lastmod>
     </url>
     <url>
-         <loc>https://mpruvot.github.io/shh/architecture/testing/</loc>
+         <loc>https://mariuspruvot.github.io/shh/architecture/testing/</loc>
          <lastmod>2025-12-23</lastmod>
     </url>
     <url>
-         <loc>https://mpruvot.github.io/shh/getting-started/installation/</loc>
+         <loc>https://mariuspruvot.github.io/shh/getting-started/installation/</loc>
          <lastmod>2025-12-23</lastmod>
     </url>
     <url>
-         <loc>https://mpruvot.github.io/shh/getting-started/quickstart/</loc>
+         <loc>https://mariuspruvot.github.io/shh/getting-started/quickstart/</loc>
          <lastmod>2025-12-23</lastmod>
     </url>
     <url>
-         <loc>https://mpruvot.github.io/shh/user-guide/commands/</loc>
+         <loc>https://mariuspruvot.github.io/shh/user-guide/commands/</loc>
          <lastmod>2025-12-23</lastmod>
     </url>
     <url>
-         <loc>https://mpruvot.github.io/shh/user-guide/configuration/</loc>
+         <loc>https://mariuspruvot.github.io/shh/user-guide/configuration/</loc>
          <lastmod>2025-12-23</lastmod>
     </url>
     <url>
-         <loc>https://mpruvot.github.io/shh/user-guide/styles/</loc>
+         <loc>https://mariuspruvot.github.io/shh/user-guide/styles/</loc>
          <lastmod>2025-12-23</lastmod>
     </url>
     <url>
-         <loc>https://mpruvot.github.io/shh/user-guide/translation/</loc>
+         <loc>https://mariuspruvot.github.io/shh/user-guide/translation/</loc>
          <lastmod>2025-12-23</lastmod>
     </url>
 </urlset>
