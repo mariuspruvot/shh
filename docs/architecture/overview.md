@@ -5,38 +5,19 @@ Pragmatic layered architecture: CLI → Core → Adapters.
 ## Layered Architecture
 
 ```
-┌─────────────────────────────────────────────────┐
-│              CLI Layer (Typer)                  │
-│  ┌───────────┐  ┌─────────┐  ┌──────────┐     │
-│  │   app.py  │  │  setup  │  │  config  │     │
-│  └─────┬─────┘  └────┬────┘  └────┬─────┘     │
-│        │             │            │            │
-│        └─────────────┴────────────┘            │
-└────────────────────┬────────────────────────────┘
-                     │ depends on
-                     ↓
-┌─────────────────────────────────────────────────┐
-│            Core Layer (Business Logic)          │
-│  ┌──────────────┐   ┌──────────────────┐       │
-│  │   styles.py  │   │  orchestration   │       │
-│  └──────────────┘   └──────────────────┘       │
-└────────────────────┬────────────────────────────┘
-                     │ depends on
-                     ↓
-┌─────────────────────────────────────────────────┐
-│         Adapters Layer (External I/O)           │
-│  ┌───────┐  ┌──────────┐  ┌──────┐  ┌────────┐│
-│  │ audio │  │ whisper  │  │ llm  │  │clipboard││
-│  └───────┘  └──────────┘  └──────┘  └────────┘│
-└─────────────────────────────────────────────────┘
-                     │
-                     ↓
-        ┌───────────────────────────┐
-        │  External Dependencies    │
-        │  • OpenAI APIs           │
-        │  • sounddevice           │
-        │  • pyperclip             │
-        └───────────────────────────┘
+CLI Layer (Typer)
+  ├─ app.py, commands/
+  ├─ Orchestrates workflows
+  └─ Calls ↓
+
+Core Layer
+  └─ styles.py (TranscriptionStyle enum)
+
+Adapters Layer (I/O)
+  ├─ audio/ (sounddevice, scipy)
+  ├─ whisper/ (OpenAI API)
+  ├─ llm/ (PydanticAI)
+  └─ clipboard/ (pyperclip)
 ```
 
 ## Dependency Rule
@@ -55,40 +36,37 @@ Benefits: Clean separation, easy testing, framework independence.
 
 User interaction and terminal UI.
 
-**Key responsibilities:**
+**Responsibilities:**
 - Parse arguments (Typer)
 - Display output (Rich)
-- Orchestrate workflows
+- Orchestrate workflows (calls adapters)
 - Bridge sync CLI to async backend
 
-**Main files:** `cli/app.py`, `cli/commands/`
+**Files:** `cli/app.py`, `cli/commands/record.py`, `cli/commands/config.py`
 
 ### Core Layer
 
-Business logic and domain models.
+Domain models only.
 
-**Key responsibilities:**
-- Define domain models (TranscriptionStyle)
-- Business rules (when to format/translate)
-- Pure logic, no I/O
-- Framework-agnostic
+**Responsibilities:**
+- Define TranscriptionStyle enum
 
-**Main files:** `core/styles.py`
+**Files:** `core/styles.py`
 
-**Dependencies:** Standard library, Pydantic types only
+**Note:** Currently minimal. Orchestration happens in CLI layer (pragmatic choice for small app).
 
 ### Adapters Layer
 
-All external I/O and integrations.
+All external I/O.
 
-**Key responsibilities:**
+**Responsibilities:**
 - Audio recording (sounddevice)
 - WAV file I/O (scipy)
-- Whisper API (httpx)
+- Whisper API (AsyncOpenAI)
 - LLM formatting (PydanticAI)
 - Clipboard (pyperclip)
 
-**Main files:** `adapters/audio/`, `adapters/whisper/`, `adapters/llm/`, `adapters/clipboard/`
+**Files:** `adapters/audio/recorder.py`, `adapters/whisper/client.py`, `adapters/llm/formatter.py`, `adapters/clipboard/manager.py`
 
 ## Data Flow
 
@@ -138,13 +116,10 @@ User runs: shh config set default_style casual
    ├─ Validate key exists
    └─ Validate value is valid enum
 
-2. Config Layer (settings.py)
-   ├─ Load existing config
-   ├─ Update setting
-   └─ Save to JSON file
-
-3. Config Layer (storage.py)
-   └─ Write JSON to platform-specific path
+2. Config (settings.py)
+   ├─ Load existing config from JSON
+   ├─ Update setting with validation
+   └─ Save to platform-specific path
 ```
 
 ## Configuration Architecture
