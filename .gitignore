@@ -76,3 +76,6 @@ temp/
 # MkDocs build output
 site/
 CLI_IMPLEMENTATION_RECAP.md
+
+# Test scripts (root level only)
+/*_test_script.py
