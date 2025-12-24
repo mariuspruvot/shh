@@ -167,15 +167,15 @@ uv run poe check
 
 ## Architecture
 
-Three layers: CLI → Core → Adapters
+Pragmatic layered architecture: CLI → Core → Adapters
 
 ```
-CLI        → Commands, user interaction
-Core       → Business logic
+CLI        → Commands, orchestration
+Core       → Domain models (TranscriptionStyle)
 Adapters   → APIs, audio, clipboard
 ```
 
-See [docs/architecture.md](docs/architecture.md) for details.
+See [docs/architecture/overview.md](docs/architecture/overview.md) for details.
 
 ## License
 
