@@ -24,7 +24,7 @@
 
     ---
 
-    Start with `shh`, stop with Enter. No configuration needed.
+    Start with `shh`, stop with Enter.
 
 -   :material-auto-fix: __AI formatting__
 
@@ -42,47 +42,26 @@
 
     ---
 
-    Results automatically copied for instant use.
+    Results automatically copied.
 
 -   :material-lightning-bolt: __Async architecture__
 
     ---
 
-    Non-blocking operations for responsive UX.
+    Non-blocking operations.
 
 -   :material-chart-line: __Live progress__
 
     ---
 
-    Real-time recording indicators with elapsed time.
+    Real-time recording indicators.
 
 </div>
 
 ## Quick Start
 
 ```bash
-# Install
 pipx install shh-cli
-
-# Configure API key
 shh setup
-
-# Record (press Enter to stop)
 shh
 ```
-
-Results appear in terminal and clipboard.
-
-## Documentation
-
-- [Installation](getting-started/installation.md) - Setup instructions
-- [Quick Start](getting-started/quickstart.md) - Get started in 2 minutes
-- [Commands](user-guide/commands.md) - All available commands
-- [Configuration](user-guide/configuration.md) - Settings and defaults
-- [API Reference](api-reference/core.md) - Code documentation
-
-## Requirements
-
-- Python 3.11+
-- OpenAI API key
-- Microphone
