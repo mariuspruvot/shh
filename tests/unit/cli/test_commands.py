@@ -34,14 +34,12 @@ def test_setup_command(temp_config_dir: Path, monkeypatch: pytest.MonkeyPatch) -
         classmethod(get_test_config_path),
     )
 
-    # Simulate user input
     result = runner.invoke(app, ["setup"], input="sk-test-key-12345678\n")
 
     assert result.exit_code == 0
     assert "Setup Complete" in result.stdout
     assert "sk-***5678" in result.stdout
 
-    # Verify file was saved
     assert config_file.exists()
     settings = Settings.load_from_file()
     assert settings is not None
@@ -82,7 +80,6 @@ def test_config_set_valid(mock_settings: Settings) -> None:
     assert result.exit_code == 0
     assert "Updated default_style = casual" in result.stdout
 
-    # Verify it was saved
     settings = Settings.load_from_file()
     assert settings is not None
     assert settings.default_style == TranscriptionStyle.CASUAL

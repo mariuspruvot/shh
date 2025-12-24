@@ -15,12 +15,10 @@ from shh.core.styles import TranscriptionStyle
 @pytest.mark.asyncio
 async def test_transcribe_audio_success(tmp_path: Path) -> None:
     """Test successful transcription with mocked OpenAI API."""
-    # Create sample audio file
     audio_data = np.random.randn(16000).astype(np.float32) * 0.5
     wav_path = save_audio_to_wav(audio_data)
 
     try:
-        # Mock the OpenAI API response
         with patch("shh.adapters.whisper.client.AsyncOpenAI") as mock_client:
             mock_transcription = MagicMock()
             mock_transcription.text = "Hello, this is a test transcription."
@@ -30,7 +28,6 @@ async def test_transcribe_audio_success(tmp_path: Path) -> None:
                 return_value=mock_transcription
             )
 
-            # Call transcribe_audio
             result = await transcribe_audio(
                 audio_file_path=wav_path,
                 api_key="sk-test-key",
@@ -127,7 +124,6 @@ async def test_format_transcription_with_translation() -> None:
         )
 
         assert result.text == "Hello, this is a test."
-        # Verify translation was requested in prompt
         call_args = mock_agent.run.call_args
         assert "English" in call_args[0][0]
 
@@ -135,12 +131,10 @@ async def test_format_transcription_with_translation() -> None:
 @pytest.mark.asyncio
 async def test_full_pipeline_mock(tmp_path: Path) -> None:
     """Test the complete pipeline: audio → transcribe → format."""
-    # Create sample audio
     audio_data = np.random.randn(16000).astype(np.float32) * 0.5
     wav_path = save_audio_to_wav(audio_data)
 
     try:
-        # Mock Whisper API
         with patch("shh.adapters.whisper.client.AsyncOpenAI") as mock_whisper:
             mock_transcription = MagicMock()
             mock_transcription.text = "Um, this is a test transcription."
@@ -150,11 +144,9 @@ async def test_full_pipeline_mock(tmp_path: Path) -> None:
                 return_value=mock_transcription
             )
 
-            # Step 1: Transcribe
             raw_text = await transcribe_audio(wav_path, "sk-test-key")
             assert raw_text == "Um, this is a test transcription."
 
-            # Mock PydanticAI for formatting
             with (
                 patch("shh.adapters.llm.formatter.OpenAIChatModel"),
                 patch("shh.adapters.llm.formatter.Agent") as mock_agent_class,
@@ -166,7 +158,6 @@ async def test_full_pipeline_mock(tmp_path: Path) -> None:
                 mock_agent.run = AsyncMock(return_value=mock_result)
                 mock_agent_class.return_value = mock_agent
 
-                # Step 2: Format
                 formatted = await format_transcription(
                     raw_text,
                     style=TranscriptionStyle.CASUAL,
