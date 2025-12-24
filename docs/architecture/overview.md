@@ -1,6 +1,6 @@
 # Architecture Overview
 
-Three layers: CLI, Core, Adapters.
+Pragmatic layered architecture: CLI → Core → Adapters.
 
 ## Layered Architecture
 
@@ -41,94 +41,54 @@ Three layers: CLI, Core, Adapters.
 
 ## Dependency Rule
 
-**Flow is unidirectional: CLI → Core → Adapters**
+**Unidirectional flow:** CLI → Core → Adapters
 
-- CLI can import Core and Adapters
-- Core **cannot** import CLI or Adapters
-- Adapters **cannot** import Core or CLI
+- CLI imports Core and Adapters
+- Core imports nothing (pure logic)
+- Adapters import nothing (isolated I/O)
 
-This ensures:
-
-- Clean separation of concerns
-- Easy testing (core logic has no external dependencies)
-- Framework independence (could swap Typer for argparse)
+Benefits: Clean separation, easy testing, framework independence.
 
 ## Layer Responsibilities
 
 ### CLI Layer
 
-**Purpose:** User interaction, command handling, terminal UI
+User interaction and terminal UI.
 
-**Responsibilities:**
+**Key responsibilities:**
+- Parse arguments (Typer)
+- Display output (Rich)
+- Orchestrate workflows
+- Bridge sync CLI to async backend
 
-- Parse command-line arguments (Typer)
-- Display output with Rich (colors, tables, panels)
-- Orchestrate workflow by calling Core and Adapters
-- Bridge sync (Typer) to async (backend) with `asyncio.run()`
-- Handle user-facing error messages
-
-**Key files:**
-
-- `cli/app.py` - Main CLI entry point
-- `cli/commands/setup.py` - API key setup wizard
-- `cli/commands/config.py` - Configuration management
-- `cli/commands/record.py` - Recording workflow
-
-**Dependencies:**
-
-- Typer (CLI framework)
-- Rich (terminal formatting)
-- Core and Adapters layers
+**Main files:** `cli/app.py`, `cli/commands/`
 
 ### Core Layer
 
-**Purpose:** Business logic and orchestration rules
+Business logic and domain models.
 
-**Responsibilities:**
+**Key responsibilities:**
+- Define domain models (TranscriptionStyle)
+- Business rules (when to format/translate)
+- Pure logic, no I/O
+- Framework-agnostic
 
-- Define domain models (TranscriptionStyle enum)
-- Contain business rules (when to format, when to translate)
-- Pure logic with no I/O operations
-- Framework-agnostic (no Typer/Rich imports)
+**Main files:** `core/styles.py`
 
-**Key files:**
-
-- `core/styles.py` - TranscriptionStyle enum
-
-**Dependencies:**
-
-- Standard library only
-- Pydantic (for types, but not I/O)
-
-**Note:** Currently, orchestration happens in the CLI layer (`record.py`). This is a pragmatic choice for simplicity. In a larger app, orchestration would move to Core.
+**Dependencies:** Standard library, Pydantic types only
 
 ### Adapters Layer
 
-**Purpose:** All external I/O and integrations
+All external I/O and integrations.
 
-**Responsibilities:**
-
+**Key responsibilities:**
 - Audio recording (sounddevice)
-- File I/O (scipy for WAV files)
-- OpenAI Whisper API calls (httpx)
-- LLM formatting with PydanticAI (OpenAI GPT)
-- Clipboard operations (pyperclip)
-- Translate external errors to domain exceptions
+- WAV file I/O (scipy)
+- Whisper API (httpx)
+- LLM formatting (PydanticAI)
+- Clipboard (pyperclip)
 
-**Key files:**
-
-- `adapters/audio/recorder.py` - Microphone recording
-- `adapters/audio/processor.py` - WAV file operations
-- `adapters/whisper/client.py` - Whisper API client
-- `adapters/llm/formatter.py` - PydanticAI formatting agent
-- `adapters/clipboard/manager.py` - Clipboard wrapper
-
-**Dependencies:**
-
-- sounddevice, scipy (audio)
-- httpx, openai (APIs)
-- pydantic-ai (LLM agent)
-- pyperclip (clipboard)
+**Main files:** `adapters/audio/`, `adapters/whisper/`, `adapters/llm/`, `adapters/clipboard/`
 
 ## Data Flow
 
@@ -217,84 +177,31 @@ User runs: shh config set default_style casual
 
 ## Async Architecture
 
-### Why Async?
+All I/O operations use async/await for non-blocking execution and responsive UX.
 
-- **Non-blocking I/O**: API calls don't freeze the UI
-- **Responsive UX**: Live progress updates while recording
-- **Efficient**: Multiple operations can run concurrently
-
-### Async Patterns
-
-**1. Async Context Managers**
+**Key patterns:**
+- Async context managers for resource cleanup
+- Thread pool executors for blocking I/O (stdin)
+- Task cancellation for graceful shutdowns
 
 ```python
 async with AudioRecorder() as recorder:
-    # Recording happens in background
     await asyncio.sleep(duration)
 # Cleanup happens automatically
 ```
 
-**2. Thread Pool for Blocking I/O**
-
-```python
-# stdin.readline() is blocking, run in thread pool
-loop = asyncio.get_running_loop()
-await loop.run_in_executor(None, sys.stdin.readline)
-```
-
-**3. Task Management**
-
-```python
-# Create background tasks
-enter_task = asyncio.create_task(wait_for_enter())
-
-# Cancel if not needed
-if not enter_task.done():
-    enter_task.cancel()
-    with contextlib.suppress(asyncio.CancelledError):
-        await enter_task
-```
-
 ## Type Safety
 
-**All code is typed with mypy --strict:**
+Full `mypy --strict` compliance with type hints on all functions.
 
-- Every function has type hints
-- No `Any` without justification
+**Stack:**
 - Pydantic models for structured data
-- Enums for finite choices (TranscriptionStyle, WhisperModel)
-
-**Benefits:**
-
-- Catch bugs at development time
-- Self-documenting code
-- IDE autocomplete and hints
-- Refactoring confidence
+- Enums for finite choices (TranscriptionStyle)
+- No `Any` without justification
 
 ## Error Handling
 
-**Philosophy: Fail fast with clear messages**
-
-### At Adapter Boundaries
-
-```python
-try:
-    response = await openai_client.transcribe(...)
-except Exception as e:
-    raise TranscriptionError(f"Failed to transcribe: {e}") from e
-```
-
-### In CLI Layer
-
-```python
-try:
-    settings = Settings.load_from_file()
-except Exception:
-    console.print("[red]No API key found. Run 'shh setup' first.[/red]")
-    raise typer.Exit(code=1)
-```
-
-### Resource Cleanup
+Fail fast with clear messages. Adapters translate external errors to domain exceptions. Resources cleaned up in `try/finally` blocks.
 
 ```python
 try:
@@ -305,17 +212,12 @@ finally:
 
 ## Testing Strategy
 
-See [Testing Architecture](testing.md) for detailed testing approach.
+Unit tests for core logic, integration tests with mocked APIs. No E2E tests in CI (avoid real API calls).
 
-**Summary:**
-
-- **Unit tests**: Core logic, isolated functions
-- **Integration tests**: Adapters with mocked APIs
-- **No E2E tests**: Avoid real API calls in CI
-- **80%+ coverage**: Enforced via Codecov
+Target: 80%+ code coverage.
 
 ## Next Steps
 
-- [Design Decisions](design-decisions.md) - Why we made specific choices
-- [Testing Architecture](testing.md) - Testing strategy and patterns
-- [API Reference](../api-reference/core.md) - Detailed code documentation
+- [Design Decisions](design-decisions.md)
+- [Testing Architecture](testing.md)
+- [API Reference](../api-reference/core.md)

@@ -69,6 +69,10 @@ Thumbs.db
 tmp/
 temp/
 
+# Screenshots and temporary images (root level only)
+/Screenshot*.png
+/mkdoc.png
+
 # MkDocs build output
 site/
 CLI_IMPLEMENTATION_RECAP.md

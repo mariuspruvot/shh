@@ -3,6 +3,7 @@
 <p align="center">
   <a href="https://pypi.org/project/shh-cli/"><img src="https://img.shields.io/pypi/v/shh-cli.svg" alt="PyPI version"></a>
   <a href="https://pypi.org/project/shh-cli/"><img src="https://img.shields.io/pypi/pyversions/shh-cli.svg" alt="Python versions"></a>
+  <a href="https://github.com/mariuspruvot/shh/actions/workflows/ci.yml"><img src="https://github.com/mariuspruvot/shh/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://github.com/mariuspruvot/shh/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
   <a href="https://mariuspruvot.github.io/shh/"><img src="https://img.shields.io/badge/docs-mkdocs-blue" alt="Documentation"></a>
 </p>
