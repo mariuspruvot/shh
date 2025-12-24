@@ -1,17 +1,18 @@
-<div align="center">
+# shh { .center }
 
-<img src="assets/shh-logo.png" alt="shh logo" width="150"/>
+<p align="center">
+  <img src="assets/shh-logo.png" alt="shh logo" width="150"/>
+</p>
 
-# shh
+<p align="center">
+  <strong>Voice transcription CLI powered by OpenAI Whisper</strong><br/>
+  Record audio, transcribe with Whisper, and optionally format or translate the output.
+</p>
 
-**Voice transcription CLI powered by OpenAI Whisper**
-
-Record audio, transcribe with Whisper, and optionally format or translate the output.
-
-[Get Started](getting-started/installation.md){ .md-button .md-button--primary }
-[View on GitHub](https://github.com/mariuspruvot/shh){ .md-button }
-
-</div>
+<p align="center">
+  <a href="getting-started/installation/" class="md-button md-button--primary">Get Started</a>
+  <a href="https://github.com/mariuspruvot/shh" class="md-button">View on GitHub</a>
+</p>
 
 ---
 
@@ -61,7 +62,7 @@ Record audio, transcribe with Whisper, and optionally format or translate the ou
 
 ```bash
 # Install
-pipx install shh
+pipx install shh-cli
 
 # Configure API key
 shh setup
