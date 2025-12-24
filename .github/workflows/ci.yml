@@ -17,8 +17,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install system dependencies (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y portaudio19-dev
+
+      - name: Install system dependencies (macOS)
+        if: matrix.os == 'macos-latest'
+        run: brew install portaudio
+
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
 
@@ -26,7 +34,7 @@ jobs:
         run: uv python install ${{ matrix.python-version }}
 
       - name: Install the project
-        run: uv sync --all-extras
+        run: uv sync --all-extras --dev
 
       - name: Run type checking
         run: uv run mypy --strict shh/
