@@ -1,8 +1,8 @@
-# shh { .center }
-
 <p align="center">
-  <img src="assets/shh-logo.png" alt="shh logo" width="150"/>
+  <img src="assets/shh-logo.png" alt="shh logo" width="200"/>
 </p>
+
+<h1 align="center">shh</h1>
 
 <p align="center">
   <strong>Voice transcription CLI powered by OpenAI Whisper</strong><br/>
@@ -14,7 +14,7 @@
   <a href="https://github.com/mariuspruvot/shh" class="md-button">View on GitHub</a>
 </p>
 
----
+<br/>
 
 ## Features
 

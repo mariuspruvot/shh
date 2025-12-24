@@ -94,4 +94,7 @@ nav:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/mpruvot/shh
+      link: https://github.com/mariuspruvot/shh
+
+extra_css:
+  - stylesheets/extra.css

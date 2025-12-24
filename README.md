@@ -1,8 +1,13 @@
 # shh
 
-Voice transcription CLI using OpenAI Whisper.
+<p align="center">
+  <a href="https://pypi.org/project/shh-cli/"><img src="https://img.shields.io/pypi/v/shh-cli.svg" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/shh-cli/"><img src="https://img.shields.io/pypi/pyversions/shh-cli.svg" alt="Python versions"></a>
+  <a href="https://github.com/mariuspruvot/shh/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <a href="https://mariuspruvot.github.io/shh/"><img src="https://img.shields.io/badge/docs-mkdocs-blue" alt="Documentation"></a>
+</p>
 
-Python 3.11+
+Voice transcription CLI using OpenAI Whisper.
 
 ---
 
@@ -18,8 +23,8 @@ Python 3.11+
 ## Quick Start
 
 ```bash
-# Install with uv
-uv pip install -e .
+# Install with pipx (recommended)
+pipx install shh-cli
 
 # Setup API key
 shh setup
@@ -30,22 +35,22 @@ shh
 
 ## Installation
 
-### Using uv
+### Using pipx (recommended)
 
 ```bash
-uv pip install -e .
+pipx install shh-cli
 ```
 
 ### Using pip
 
 ```bash
-pip install -e .
+pip install shh-cli
 ```
 
-### Development
+### Development Setup
 
 ```bash
-git clone https://github.com/mpruvot/shh.git
+git clone https://github.com/mariuspruvot/shh.git
 cd shh
 uv venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
