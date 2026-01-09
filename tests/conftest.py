@@ -21,6 +21,7 @@ def temp_config_dir(tmp_path: Path) -> Generator[Path, None, None]:
 @pytest.fixture
 def mock_settings(temp_config_dir: Path, monkeypatch: pytest.MonkeyPatch) -> Settings:
     """Provide mock settings with test API key."""
+
     # Mock the config path to use temp directory
     def get_test_config_path(cls: type) -> Path:
         return temp_config_dir / "settings.json"

@@ -24,9 +24,7 @@ async def test_transcribe_audio_success(tmp_path: Path) -> None:
             mock_transcription.text = "Hello, this is a test transcription."
 
             mock_instance = mock_client.return_value
-            mock_instance.audio.transcriptions.create = AsyncMock(
-                return_value=mock_transcription
-            )
+            mock_instance.audio.transcriptions.create = AsyncMock(return_value=mock_transcription)
 
             result = await transcribe_audio(
                 audio_file_path=wav_path,

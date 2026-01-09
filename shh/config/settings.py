@@ -37,6 +37,10 @@ class Settings(BaseSettings):
         description="Default language for translation (e.g., 'English', 'French', 'Spanish')",
     )
     show_progress: bool = Field(default=True)
+    quiet_mode: bool = Field(
+        default=False,
+        description="Use minimal output (just result + 'Done')",
+    )
     whisper_model: WhisperModel = Field(default=WhisperModel.WHISPER_1)
     default_output: list[str] = Field(default_factory=lambda: ["clipboard", "stdout"])
 

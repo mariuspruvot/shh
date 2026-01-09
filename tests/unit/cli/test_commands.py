@@ -150,5 +150,3 @@ def test_record_command_no_api_key(
     # Should fail with error about missing API key
     assert result.exit_code == 1
     assert "No API key found" in result.stdout or mock_record.called
-
-
