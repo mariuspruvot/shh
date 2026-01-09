@@ -66,8 +66,9 @@ uv pip install -e ".[dev]"
 # Quick record - press Enter to stop
 shh
 
-# Record for specific duration
-shh --duration 60
+# Minimal output (just result + "Done")
+shh --quiet
+shh -q
 ```
 
 ### Formatting Styles
@@ -97,6 +98,25 @@ shh config set default_translation_language English
 
 # Now recordings auto-translate without --translate flag
 shh
+```
+
+### Output Modes
+
+```bash
+# Rich UI (default) - colors, panels, live progress
+shh
+
+# Quiet mode - minimal output for scripting
+shh --quiet
+
+# Set quiet mode as default
+shh config set quiet_mode true
+
+# Override quiet mode with verbose flag
+shh --verbose
+
+# Combine with other options
+shh --quiet --style casual --translate English
 ```
 
 ### Configuration

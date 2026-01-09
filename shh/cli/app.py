@@ -46,6 +46,22 @@ def default_command(
             help="Translate to language (e.g., English, French)",
         ),
     ] = None,
+    quiet: Annotated[
+        bool,
+        typer.Option(
+            "--quiet",
+            "-q",
+            help="Minimal output (overrides config default)",
+        ),
+    ] = False,
+    verbose: Annotated[
+        bool,
+        typer.Option(
+            "--verbose",
+            "-v",
+            help="Rich UI output (overrides config default)",
+        ),
+    ] = False,
 ) -> None:
     """Record audio and transcribe. Press Enter to stop."""
     # If a subcommand was invoked, don't run the default
@@ -53,7 +69,7 @@ def default_command(
         return
 
     # Run the async record command
-    asyncio.run(record_command(style=style, translate=translate))
+    asyncio.run(record_command(style=style, translate=translate, quiet=quiet, verbose=verbose))
 
 
 def main() -> None:

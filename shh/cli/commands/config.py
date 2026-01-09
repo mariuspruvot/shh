@@ -13,9 +13,7 @@ from shh.core.styles import TranscriptionStyle
 console = Console()
 
 # Create a sub-app for config commands
-config_app = typer.Typer(
-    help="Manage configuration (wizard, show, get, set, edit, reset)"
-)
+config_app = typer.Typer(help="Manage configuration (wizard, show, get, set, edit, reset)")
 
 
 # Valid settings keys for validation
@@ -23,6 +21,7 @@ VALID_KEYS = {
     "default_style": list(TranscriptionStyle),
     "default_translation_language": None,  # Freeform text, no validation
     "show_progress": [True, False],
+    "quiet_mode": [True, False],
     "whisper_model": list(WhisperModel),
 }
 
@@ -55,6 +54,7 @@ def config_show() -> None:
         settings.default_translation_language or "[dim]None[/dim]",
     )
     table.add_row("show_progress", str(settings.show_progress))
+    table.add_row("quiet_mode", str(settings.quiet_mode))
     table.add_row("whisper_model", str(settings.whisper_model))
     table.add_row("default_output", ", ".join(settings.default_output))
 
@@ -129,6 +129,11 @@ def config_set(key: str, value: str) -> None:
     elif key == "show_progress":
         if value.lower() not in ("true", "false"):
             console.print("[red]Error: show_progress must be 'true' or 'false'[/red]")
+            raise typer.Exit(code=1)
+        typed_value = value.lower() == "true"
+    elif key == "quiet_mode":
+        if value.lower() not in ("true", "false"):
+            console.print("[red]Error: quiet_mode must be 'true' or 'false'[/red]")
             raise typer.Exit(code=1)
         typed_value = value.lower() == "true"
     elif key == "whisper_model":

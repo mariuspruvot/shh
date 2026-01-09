@@ -15,10 +15,13 @@ def test_settings_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
 
     # Disable .env file loading for this test
-    monkeypatch.setattr("shh.config.settings.Settings.model_config", {
-        "env_prefix": "SHH_",
-        "extra": "ignore",
-    })
+    monkeypatch.setattr(
+        "shh.config.settings.Settings.model_config",
+        {
+            "env_prefix": "SHH_",
+            "extra": "ignore",
+        },
+    )
 
     settings = Settings()
 
