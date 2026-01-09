@@ -5,6 +5,7 @@ import contextlib
 import sys
 from collections.abc import Callable
 
+import numpy as np
 import pyperclip  # type: ignore[import-untyped]
 from numpy.typing import NDArray
 
@@ -32,7 +33,7 @@ class RecordingService:
     async def record_audio(
         self,
         on_progress: Callable[[float, float], None] | None = None,
-    ) -> NDArray:
+    ) -> NDArray[np.float32]:
         """
         Record audio from the microphone until Enter is pressed or max duration reached.
 
@@ -69,7 +70,7 @@ class RecordingService:
 
     async def transcribe_and_format(
         self,
-        audio_data: NDArray,
+        audio_data: NDArray[np.float32],
         options: RecordingOptions,
     ) -> TranscriptionOutput:
         """
