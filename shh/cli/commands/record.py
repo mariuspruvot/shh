@@ -15,6 +15,27 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("openai").setLevel(logging.WARNING)
 
 
+def _get_ui(quiet: bool, verbose: bool, settings: Settings) -> UIOutput:
+    """
+    Determine which UI to use based on flags and config.
+    
+    Priority: verbose flag > quiet flag > config setting
+    
+    Args:
+        quiet: Force quiet mode
+        verbose: Force verbose mode
+        settings: User settings
+        
+    Returns:
+        UIOutput instance (RichUI or QuietUI)
+    """
+    if verbose:
+        return RichUI()
+    if quiet:
+        return QuietUI()
+    return QuietUI() if settings.quiet_mode else RichUI()
+
+
 async def record_command(
     style: TranscriptionStyle | None = None,
     translate: str | None = None,
@@ -44,21 +65,7 @@ async def record_command(
     # Use provided options or fall back to config defaults
     formatting_style = style if style is not None else settings.default_style
     target_language = translate if translate is not None else settings.default_translation_language
-
-    # Determine quiet mode: CLI flags override config
-    if quiet and verbose:
-        # Both flags? Verbose wins (more info is better for errors)
-        use_quiet_mode = False
-    elif quiet:
-        use_quiet_mode = True
-    elif verbose:
-        use_quiet_mode = False
-    else:
-        # No flags, use config
-        use_quiet_mode = settings.quiet_mode
-
-    # Choose UI based on quiet mode
-    ui = QuietUI() if use_quiet_mode else RichUI()
+    ui = _get_ui(quiet, verbose, settings)
 
     # Create service
     service = RecordingService(settings)
