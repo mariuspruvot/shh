@@ -58,15 +58,14 @@ async def record_command(
         use_quiet_mode = settings.quiet_mode
 
     # Choose UI based on quiet mode
-    show_progress = not use_quiet_mode and settings.show_progress
-    ui = RichUI() if show_progress else QuietUI()
+    ui = QuietUI() if use_quiet_mode else RichUI()
 
     # Create service
     service = RecordingService(settings)
     options = RecordingOptions(
         style=formatting_style,
         translate=target_language,
-        show_progress=show_progress,
+        show_progress=settings.show_progress,
     )
 
     try:
@@ -76,9 +75,8 @@ async def record_command(
         def progress_callback(elapsed: float, max_duration: float) -> None:
             ui.show_recording_progress(RecordingProgress(elapsed, max_duration))
 
-        audio_data = await service.record_audio(
-            on_progress=progress_callback if show_progress else None
-        )
+        # Always pass progress callback - UI decides how to display it
+        audio_data = await service.record_audio(on_progress=progress_callback)
 
         ui.show_recording_stopped()
 

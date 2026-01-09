@@ -1,10 +1,10 @@
-"""Minimal quiet UI output - just prints 'Done' when finished."""
+"""Minimal quiet UI output - progress bar and 'Done'."""
 
 from shh.cli.ui.base import RecordingProgress, TranscriptionResult, UIOutput
 
 
 class QuietUI(UIOutput):
-    """Minimal UI that only prints the final result and 'Done'."""
+    """Minimal UI: shows recording time, then 'Done'. Text copied to clipboard only."""
 
     def show_error(self, message: str, details: str | None = None) -> None:
         """Display error to stderr."""
@@ -20,21 +20,25 @@ class QuietUI(UIOutput):
         """No info messages in quiet mode."""
 
     def show_recording_start(self) -> None:
-        """No output on recording start."""
+        """Start is shown by first progress update."""
 
     def show_recording_progress(self, progress: RecordingProgress) -> None:
-        """No progress output in quiet mode."""
+        """Show minimal recording progress on same line."""
+        print(
+            f"\rRecording... {progress.elapsed:.1f}s / {progress.max_duration:.0f}s",
+            end="",
+            flush=True,
+        )
 
     def show_recording_stopped(self, reason: str | None = None) -> None:
-        """No output on recording stop."""
+        """Clear the progress line."""
+        print()  # New line after progress
 
     def show_processing_step(self, step: str) -> None:
         """No processing step output."""
 
     def show_result(self, result: TranscriptionResult) -> None:
-        """Just print the text and 'Done'."""
-        print(result.text)
-        print("Done")
+        """Silent result. Text is in clipboard only."""
 
     def cleanup(self) -> None:
         """Nothing to cleanup in quiet mode."""

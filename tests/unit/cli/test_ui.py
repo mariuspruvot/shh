@@ -14,15 +14,21 @@ def test_quiet_ui_minimal_output() -> None:
     # Test that most methods produce no output
     with patch("sys.stdout", new_callable=StringIO) as mock_stdout:
         ui.show_info("This should be silent")
-        ui.show_recording_start()
-        ui.show_recording_progress(RecordingProgress(elapsed=5.0, max_duration=300.0))
-        ui.show_recording_stopped()
         ui.show_processing_step("Processing...")
 
         output = mock_stdout.getvalue()
         assert output == ""
 
-    # Test that result shows text and "Done"
+    # Test recording progress shows time
+    with patch("sys.stdout", new_callable=StringIO) as mock_stdout:
+        ui.show_recording_progress(RecordingProgress(elapsed=5.2, max_duration=300.0))
+
+        output = mock_stdout.getvalue()
+        assert "Recording" in output
+        assert "5.2s" in output
+        assert "300s" in output
+
+    # Test result shows nothing (text in clipboard)
     with patch("sys.stdout", new_callable=StringIO) as mock_stdout:
         result = TranscriptionResult(
             text="Hello world",
@@ -31,8 +37,8 @@ def test_quiet_ui_minimal_output() -> None:
         ui.show_result(result)
 
         output = mock_stdout.getvalue()
-        assert "Hello world" in output
-        assert "Done" in output
+        assert output == ""
+        assert "Hello world" not in output
 
 
 def test_quiet_ui_errors() -> None:
