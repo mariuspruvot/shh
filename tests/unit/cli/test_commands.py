@@ -7,6 +7,10 @@ import pytest
 from typer.testing import CliRunner
 
 from shh.cli.app import app
+from shh.cli.commands import record as record_module
+from shh.cli.ui.pipe_ui import PipeUI
+from shh.cli.ui.quiet_ui import QuietUI
+from shh.cli.ui.rich_ui import RichUI
 from shh.config.settings import Settings
 from shh.core.styles import TranscriptionStyle
 
@@ -148,5 +152,44 @@ def test_record_command_no_api_key(
     result = runner.invoke(app, [])
 
     # Should fail with error about missing API key
+    # Error may go to stderr (PipeUI when not a TTY) or stdout (RichUI)
     assert result.exit_code == 1
-    assert "No API key found" in result.stdout or mock_record.called
+    combined = result.stdout + result.stderr
+    assert "No API key found" in combined or mock_record.called
+
+
+def test_record_command_uses_pipe_ui_when_not_tty(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test that _select_ui returns PipeUI when stdout is not a TTY."""
+    monkeypatch.setattr("sys.stdout.isatty", lambda: False)
+    ui = record_module._select_ui(quiet=False, verbose=False, quiet_default=False)
+    assert isinstance(ui, PipeUI)
+
+
+def test_record_command_uses_quiet_ui_when_flag(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test that _select_ui returns QuietUI when --quiet is passed."""
+    monkeypatch.setattr("sys.stdout.isatty", lambda: True)
+    ui = record_module._select_ui(quiet=True, verbose=False, quiet_default=False)
+    assert isinstance(ui, QuietUI)
+
+
+def test_record_command_uses_rich_ui_default(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test that _select_ui returns RichUI when no special flags are set."""
+    monkeypatch.setattr("sys.stdout.isatty", lambda: True)
+    ui = record_module._select_ui(quiet=False, verbose=False, quiet_default=False)
+    assert isinstance(ui, RichUI)
+
+
+def test_record_command_verbose_overrides_quiet_default(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test that --verbose overrides quiet_default setting."""
+    monkeypatch.setattr("sys.stdout.isatty", lambda: True)
+    ui = record_module._select_ui(quiet=False, verbose=True, quiet_default=True)
+    assert isinstance(ui, RichUI)
+
+
+def test_record_command_uses_quiet_ui_when_config_default_and_no_verbose(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """When Settings.quiet_mode=True and user doesn't pass --verbose, QuietUI is selected."""
+    monkeypatch.setattr("sys.stdout.isatty", lambda: True)
+    ui = record_module._select_ui(quiet=False, verbose=False, quiet_default=True)
+    assert isinstance(ui, QuietUI)
