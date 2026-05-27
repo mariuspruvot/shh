@@ -6,6 +6,7 @@ from typing import Annotated
 import typer
 
 from shh.cli.commands.config import config_app
+from shh.cli.commands.history import history_app
 from shh.cli.commands.record import record_command
 from shh.cli.commands.setup import setup_command
 from shh.core.styles import TranscriptionStyle
@@ -19,6 +20,7 @@ app = typer.Typer(
 
 # Add config subcommand group
 app.add_typer(config_app, name="config")
+app.add_typer(history_app, name="history")
 
 
 @app.command(name="setup")
