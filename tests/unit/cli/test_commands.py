@@ -193,3 +193,23 @@ def test_record_command_uses_quiet_ui_when_config_default_and_no_verbose(
     monkeypatch.setattr("sys.stdout.isatty", lambda: True)
     ui = record_module._select_ui(quiet=False, verbose=False, quiet_default=True)
     assert isinstance(ui, QuietUI)
+
+
+def test_config_set_history_enabled(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    settings_file = tmp_path / "settings.json"
+    monkeypatch.setattr(Settings, "get_config_path", classmethod(lambda cls: settings_file))
+    result = CliRunner().invoke(app, ["config", "set", "history_enabled", "false"])
+    assert result.exit_code == 0, result.output
+    loaded = Settings.load_from_file()
+    assert loaded is not None
+    assert loaded.history_enabled is False
+
+
+def test_config_set_history_retention(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    settings_file = tmp_path / "settings.json"
+    monkeypatch.setattr(Settings, "get_config_path", classmethod(lambda cls: settings_file))
+    result = CliRunner().invoke(app, ["config", "set", "history_retention", "50"])
+    assert result.exit_code == 0, result.output
+    loaded = Settings.load_from_file()
+    assert loaded is not None
+    assert loaded.history_retention == 50
