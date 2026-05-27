@@ -3,32 +3,46 @@
 import asyncio
 import contextlib
 import sys
+import uuid
 from collections.abc import Callable
+from datetime import UTC, datetime
 
 import numpy as np
 import pyperclip  # type: ignore[import-untyped]
 from numpy.typing import NDArray
 
-from shh.adapters.audio.processor import save_audio_to_wav
+from shh.adapters.audio.processor import SAMPLE_RATE, save_audio_to_wav
 from shh.adapters.audio.recorder import AudioRecorder
+from shh.adapters.history.store import HistoryStore
 from shh.adapters.llm.formatter import format_transcription
 from shh.adapters.whisper.client import transcribe_audio
+from shh.cli.ui.base import UIOutput
 from shh.config.settings import Settings
-from shh.core.models import RecordingOptions, TranscriptionOutput
+from shh.core.models import HistoryEntry, RecordingOptions, TranscriptionOutput
 from shh.core.styles import TranscriptionStyle
+from shh.utils.logger import logger
 
 
 class RecordingService:
     """Service for recording audio and transcribing it."""
 
-    def __init__(self, settings: Settings) -> None:
+    def __init__(
+        self,
+        settings: Settings,
+        ui: UIOutput,
+        history_store: HistoryStore,
+    ) -> None:
         """
         Initialize the recording service.
 
         Args:
             settings: Application settings
+            ui: UI output implementation
+            history_store: History persistence store
         """
         self.settings = settings
+        self._ui = ui
+        self._history_store = history_store
 
     async def record_audio(
         self,
@@ -72,6 +86,7 @@ class RecordingService:
         self,
         audio_data: NDArray[np.float32],
         options: RecordingOptions,
+        skip_history: bool = False,
     ) -> TranscriptionOutput:
         """
         Transcribe audio and optionally format/translate it.
@@ -79,34 +94,60 @@ class RecordingService:
         Args:
             audio_data: Raw audio data
             options: Recording options (style, translation, etc.)
+            skip_history: If True, skip persisting to history even when enabled
 
         Returns:
             TranscriptionOutput with the processed text
         """
-        # Step 1: Save to WAV
-        audio_file_path = save_audio_to_wav(audio_data)
+        self._ui.show_processing_step("Saving audio")
+        wav_path = save_audio_to_wav(audio_data)
 
         try:
-            # Step 2: Transcribe
-            transcription = await transcribe_audio(
-                audio_file_path=audio_file_path,
-                api_key=self.settings.openai_api_key,  # type: ignore
+            self._ui.show_processing_step("Transcribing")
+            whisper_result = await transcribe_audio(
+                audio_file_path=wav_path,
+                api_key=self.settings.openai_api_key or "",
+                model=self.settings.whisper_model,
             )
 
-            # Step 3: Format/Translate (if requested)
-            if options.style != TranscriptionStyle.NEUTRAL or options.translate:
+            needs_formatting = (
+                options.style != TranscriptionStyle.NEUTRAL
+                or options.translate is not None
+            )
+
+            if needs_formatting:
+                label = "Formatting"
+                if options.translate:
+                    label = f"Formatting ({options.translate})"
+                self._ui.show_processing_step(label)
                 formatted = await format_transcription(
-                    transcription,
+                    whisper_result.text,
                     style=options.style,
-                    api_key=self.settings.openai_api_key,  # type: ignore
+                    api_key=self.settings.openai_api_key or "",
                     target_language=options.translate,
                 )
                 final_text = formatted.text
             else:
-                final_text = transcription
+                final_text = whisper_result.text
 
-            # Step 4: Copy to clipboard
+            # Copy to clipboard
             clipboard_success = self._copy_to_clipboard(final_text)
+
+            # Persist to history
+            if self.settings.history_enabled and not skip_history:
+                entry = HistoryEntry(
+                    id=uuid.uuid4().hex[:8],
+                    ts=datetime.now(tz=UTC),
+                    text=final_text,
+                    style=options.style,
+                    translate_to=options.translate,
+                    duration_s=len(audio_data) / SAMPLE_RATE,
+                    detected_lang=whisper_result.detected_lang,
+                )
+                try:
+                    self._history_store.append(entry)
+                except OSError as exc:
+                    logger.warning(f"Failed to persist history entry: {exc}")
 
             return TranscriptionOutput(
                 text=final_text,
@@ -116,8 +157,8 @@ class RecordingService:
             )
 
         finally:
-            # Cleanup temp file
-            audio_file_path.unlink(missing_ok=True)
+            with contextlib.suppress(Exception):
+                wav_path.unlink(missing_ok=True)
 
     async def record_and_transcribe(
         self,

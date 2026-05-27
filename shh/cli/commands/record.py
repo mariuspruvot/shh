@@ -3,6 +3,7 @@
 import logging
 import sys
 
+from shh.adapters.history.store import HistoryStore
 from shh.cli.ui import QuietUI, RichUI, UIOutput
 from shh.cli.ui.base import RecordingProgress, TranscriptionResult
 from shh.config.settings import Settings
@@ -68,7 +69,11 @@ async def record_command(
     ui = _get_ui(quiet, verbose, settings)
 
     # Create service
-    service = RecordingService(settings)
+    store = HistoryStore(
+        path=Settings.get_history_path(),
+        retention=settings.history_retention,
+    )
+    service = RecordingService(settings=settings, ui=ui, history_store=store)
     options = RecordingOptions(
         style=formatting_style,
         translate=target_language,
@@ -91,16 +96,6 @@ async def record_command(
         if len(audio_data) == 0:
             ui.show_warning("No audio recorded.")
             sys.exit(1)
-
-        # Processing phases
-        ui.show_processing_step("Saving audio...")
-        ui.show_processing_step("Transcribing with Whisper...")
-
-        if formatting_style != TranscriptionStyle.NEUTRAL or target_language:
-            if target_language:
-                ui.show_processing_step(f"Formatting and translating to {target_language}...")
-            else:
-                ui.show_processing_step(f"Formatting ({formatting_style})...")
 
         # Transcribe and format
         result = await service.transcribe_and_format(audio_data, options)
