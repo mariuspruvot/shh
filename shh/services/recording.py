@@ -3,6 +3,8 @@
 import asyncio
 import contextlib
 import sys
+import termios
+import tty
 import uuid
 from collections.abc import Callable
 from datetime import UTC, datetime
@@ -183,10 +185,30 @@ class RecordingService:
         return await self.transcribe_and_format(audio_data, options)
 
     @staticmethod
+    def _wait_for_enter_blocking() -> None:
+        """Block until Enter is pressed. Uses cbreak mode on a TTY to suppress
+        the echoed newline that would otherwise interfere with rich.live.Live's
+        cursor anchor. Falls back to readline for non-TTY stdin (tests, pipes).
+        """
+        if not sys.stdin.isatty():
+            sys.stdin.readline()
+            return
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setcbreak(fd)
+            while True:
+                ch = sys.stdin.read(1)
+                if ch in ("\n", "\r"):
+                    return
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+
+    @staticmethod
     async def _wait_for_enter() -> None:
         """Wait for user to press Enter (runs in thread pool)."""
         loop = asyncio.get_running_loop()
-        await loop.run_in_executor(None, sys.stdin.readline)
+        await loop.run_in_executor(None, RecordingService._wait_for_enter_blocking)
 
     @staticmethod
     def _copy_to_clipboard(text: str) -> bool:
