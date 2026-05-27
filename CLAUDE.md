@@ -17,7 +17,7 @@ For general Python development preferences, see `~/.claude/CLAUDE.md`. **This pr
 - Copy results to clipboard automatically
 - Async architecture for responsive UX
 
-**Tech Stack**: Python 3.11+ • OpenAI Whisper • PydanticAI (`gpt-4o-mini`) • Typer • Rich • sounddevice
+**Tech Stack**: Python 3.11+ • OpenAI Whisper • PydanticAI (`gpt-4o-mini`) • Typer • Rich • prompt_toolkit (transitive via ipython, used for the history picker) • sounddevice
 
 ---
 
@@ -26,14 +26,16 @@ For general Python development preferences, see `~/.claude/CLAUDE.md`. **This pr
 This project follows a **Pragmatic Layered Architecture**. The CLI calls a thin service layer that orchestrates the recording/transcription/formatting flow.
 
 ```
-   CLI (Typer + Rich/Quiet)
+   CLI (Typer)
+   ├─ Output UI:  Rich / Quiet / Pipe (TTY-aware selection)
+   └─ History picker (prompt_toolkit, shh history)
               ↓
         Services Layer            RecordingService
               ↓
       ┌───────┴────────┐
     Core            Adapters
   (models,        (audio, whisper,
-   styles)         llm, clipboard)
+   styles)         llm, clipboard, history)
 ```
 
 **Dependency Rule**: `CLI → Services → (Core + Adapters)`. Lower layers never import from upper layers. Adapters are framework-agnostic and never import `cli/` or `services/`.
@@ -44,18 +46,19 @@ This project follows a **Pragmatic Layered Architecture**. The CLI calls a thin 
 shh/
 ├── cli/                    # CLI Layer - Typer commands + UI abstraction
 │   ├── app.py             # Typer app entry point (callback pattern, default = record)
-│   ├── commands/          # Subcommands: record, setup, config
-│   └── ui/                # UIOutput Protocol + RichUI + QuietUI implementations
+│   ├── commands/          # Subcommands: record (default), setup, config, history
+│   └── ui/                # UIOutput Protocol + RichUI / QuietUI / PipeUI + history_picker
 ├── services/               # Orchestration layer
-│   └── recording.py       # RecordingService (record + transcribe + format)
+│   └── recording.py       # RecordingService (record + transcribe + format + persist)
 ├── core/                   # Domain models & enums (no I/O, framework-agnostic)
-│   ├── models.py          # RecordingOptions, TranscriptionOutput
+│   ├── models.py          # RecordingOptions, TranscriptionOutput, HistoryEntry, WhisperTranscription
 │   └── styles.py          # TranscriptionStyle enum
 ├── adapters/               # External Integrations (framework-agnostic)
 │   ├── audio/             # sounddevice recording + scipy WAV processing
-│   ├── whisper/           # OpenAI Whisper API client (AsyncOpenAI)
+│   ├── whisper/           # OpenAI Whisper API client (AsyncOpenAI, verbose_json)
 │   ├── llm/               # PydanticAI formatting agent (gpt-4o-mini)
-│   └── clipboard/         # pyperclip wrapper
+│   ├── clipboard/         # pyperclip wrapper
+│   └── history/           # JSONL-backed HistoryStore with size-bounded rotation
 ├── config/                 # Configuration management
 │   └── settings.py        # pydantic-settings (env + JSON config file)
 └── utils/                  # Shared utilities
@@ -108,6 +111,15 @@ shh --quiet
 
 # Verbose output (overrides quiet_mode config)
 shh --verbose
+
+# Skip persisting this transcription to history
+shh --no-history
+
+# Browse past transcriptions (interactive picker; Enter = copy, Esc = quit)
+shh history
+
+# Purge all history entries (with confirmation)
+shh history clear
 ```
 
 ### Testing
@@ -193,11 +205,15 @@ Platform-specific paths via `platformdirs`:
   "default_style": "neutral",
   "default_translation_language": null,
   "quiet_mode": false,
-  "whisper_model": "whisper-1"
+  "whisper_model": "whisper-1",
+  "history_enabled": true,
+  "history_retention": 200
 }
 ```
 
-`quiet_mode` selects `QuietUI` over `RichUI` for `shh` invocations. The CLI flags `--quiet` / `--verbose` override this field at runtime. See `shh/config/settings.py` for the authoritative schema.
+`quiet_mode` selects `QuietUI` over `RichUI` for `shh` invocations on a TTY. The CLI flags `--quiet` / `--verbose` override this field at runtime. When stdout is not a TTY, `PipeUI` is selected regardless. See `shh/config/settings.py` for the authoritative schema.
+
+History persists to `<config_dir>/history.jsonl` next to `settings.json`. `history_retention` is the maximum entry count before rotation (rewrite with the most recent N). `history_enabled = false` disables persistence globally; `--no-history` skips a single invocation.
 
 ### Priority Order
 
@@ -236,13 +252,29 @@ Platform-specific paths via `platformdirs`:
 ### UI Output Layer (Protocol)
 
 - **Defined in** `shh/cli/ui/base.py`. `UIOutput` is a `typing.Protocol` — structural typing, no inheritance.
-- **Implementations**: `RichUI` (default, animated progress + styled output) and `QuietUI` (minimal: progress bar + final text).
-- **Selection**: `RichUI` unless `Settings.quiet_mode` is true or `--quiet` is passed.
+- **Implementations**:
+  - `RichUI` — default. A **single** `Live(transient=True)` spinner morphs through `Recording → Transcribing → [Formatting]` and erases on stop. Final output is plain text + dim `✓ copied to clipboard` (no Panel).
+  - `QuietUI` — minimal: progress bar + final text.
+  - `PipeUI` — non-TTY: writes only the transcribed text to stdout; errors/warnings to stderr.
+- **TTY-aware selection** (`shh/cli/commands/record.py::_select_ui`):
+  - `not sys.stdout.isatty()` → `PipeUI` (overrides every other flag — pipes always get clean text).
+  - `--quiet` or (`Settings.quiet_mode` and not `--verbose`) → `QuietUI`.
+  - Otherwise → `RichUI`.
 - **Adding a new UI**: implement every method of `UIOutput` (`show_error`, `show_recording_progress`, `show_result`, `cleanup`, …) in a new class — no base class to extend.
+
+### Transcription History
+
+- **Store**: `shh/adapters/history/store.py` — `HistoryStore(path, retention)`. JSONL, append-only, size-bounded rotation (keeps last N lines after append). Malformed lines on read are skipped with a logger warning.
+- **Model**: `HistoryEntry` in `shh/core/models.py` (`id`, `ts`, `text`, `style`, `translate_to`, `duration_s`, `detected_lang`).
+- **Persistence**: `RecordingService` appends one entry per successful transcription when `settings.history_enabled and not skip_history`. `OSError` on append is logged and swallowed — a successful transcription should never be lost because history failed to persist.
+- **`--no-history` flag** on `shh` / record path threads as `skip_history=True` through the service.
+- **Picker UI**: `shh/cli/ui/history_picker.py` — `prompt_toolkit` `Application` with list + preview + footer. Pure helpers (`filter_entries`, `format_relative_time`, `truncate_text`, `render_row`) are testable in isolation; the interactive layer is not unit-tested.
+- **Commands**: `shh history` opens the picker; `shh history clear` purges with confirmation.
 
 ### CLI Entry Point Pattern
 
-- `shh/cli/app.py` uses Typer's `@app.callback(invoke_without_command=True)` so that the bare `shh` command runs the default record flow while still allowing `shh setup`, `shh config`, `shh record` subcommands.
+- `shh/cli/app.py` uses Typer's `@app.callback(invoke_without_command=True)` so that the bare `shh` command runs the default record flow while still allowing `shh setup`, `shh config`, and `shh history` subcommands.
+- Whisper detected language is extracted via the SDK's `verbose_json` overload — the response is annotated `TranscriptionVerbose` and `.language` is accessed directly (no `getattr` defensiveness).
 
 ### Error Handling
 
