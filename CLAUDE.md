@@ -17,27 +17,26 @@ For general Python development preferences, see `~/.claude/CLAUDE.md`. **This pr
 - Copy results to clipboard automatically
 - Async architecture for responsive UX
 
-**Tech Stack**: Python 3.11+ • OpenAI Whisper • PydanticAI (`gpt-4o-mini`) • Typer • Rich • Textual (TUI, optional) • sounddevice
+**Tech Stack**: Python 3.11+ • OpenAI Whisper • PydanticAI (`gpt-4o-mini`) • Typer • Rich • sounddevice
 
 ---
 
 ## Architecture
 
-This project follows a **Pragmatic Layered Architecture**. Two interfaces (CLI and TUI) share a single service layer that orchestrates the recording/transcription/formatting flow.
+This project follows a **Pragmatic Layered Architecture**. The CLI calls a thin service layer that orchestrates the recording/transcription/formatting flow.
 
 ```
-   CLI (Typer + Rich/Quiet)        TUI (Textual)
-              \                         /
-               \                       /
-                →   Services Layer   ←        RecordingService
-                          ↓
-                  ┌───────┴────────┐
-                Core            Adapters
-              (models,        (audio, whisper,
-               styles)         llm, clipboard)
+   CLI (Typer + Rich/Quiet)
+              ↓
+        Services Layer            RecordingService
+              ↓
+      ┌───────┴────────┐
+    Core            Adapters
+  (models,        (audio, whisper,
+   styles)         llm, clipboard)
 ```
 
-**Dependency Rule**: `CLI / TUI → Services → (Core + Adapters)`. Lower layers never import from upper layers. Adapters are framework-agnostic and never import `cli/`, `tui/`, or `services/`.
+**Dependency Rule**: `CLI → Services → (Core + Adapters)`. Lower layers never import from upper layers. Adapters are framework-agnostic and never import `cli/` or `services/`.
 
 ### Directory Structure
 
@@ -45,13 +44,9 @@ This project follows a **Pragmatic Layered Architecture**. Two interfaces (CLI a
 shh/
 ├── cli/                    # CLI Layer - Typer commands + UI abstraction
 │   ├── app.py             # Typer app entry point (callback pattern, default = record)
-│   ├── commands/          # Subcommands: record, setup, config, tui
+│   ├── commands/          # Subcommands: record, setup, config
 │   └── ui/                # UIOutput Protocol + RichUI + QuietUI implementations
-├── tui/                    # TUI Layer - Textual app (optional, see [tui] extra)
-│   ├── app.py             # ShhTUI App entry point
-│   ├── screens/           # Recording, Settings screens
-│   └── widgets/           # Custom widgets
-├── services/               # Orchestration - shared by CLI and TUI
+├── services/               # Orchestration layer
 │   └── recording.py       # RecordingService (record + transcribe + format)
 ├── core/                   # Domain models & enums (no I/O, framework-agnostic)
 │   ├── models.py          # RecordingOptions, TranscriptionOutput
@@ -68,15 +63,13 @@ shh/
     └── logger.py          # rich.logging setup
 ```
 
-> Note: `shh/tui/` and `shh/cli/commands/tui.py` are currently **untracked**. Commit them before relying on the TUI in CI or releases.
-
 ### Key Architectural Principles
 
 1. **Async-first**: All I/O operations use `async/await` (Whisper API, LLM calls, recording service).
 2. **Type safety**: Full type hints + `mypy --strict` enforcement.
-3. **Single service layer**: CLI and TUI both consume `RecordingService` — never duplicate business logic across interfaces.
+3. **Service layer for orchestration**: Record/transcribe/format flow lives in `RecordingService`, not in a CLI command. Commands stay thin.
 4. **Protocol-based UI**: Output is abstracted through the `UIOutput` Protocol (`shh/cli/ui/base.py`). New UIs (e.g., `QuietUI`, `RichUI`) implement the methods structurally — no inheritance required.
-5. **Framework-agnostic core/adapters**: No Typer / Rich / Textual imports below the `cli/` and `tui/` layers.
+5. **Framework-agnostic core/adapters/services**: No Typer / Rich imports outside `cli/`.
 6. **Temporary files**: Audio recorded to temp WAV, deleted immediately after transcription (`try/finally`).
 
 ---
@@ -89,13 +82,7 @@ shh/
 # Create virtual environment and install
 uv venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
-uv pip install -e ".[dev]"   # Includes textual (dev pulls the [tui] deps)
-
-# CLI-only install (no Textual / TUI)
-uv pip install -e .
-
-# End-user install with TUI support
-uv pip install -e ".[tui]"
+uv pip install -e ".[dev]"
 
 # Setup API key
 shh setup
@@ -121,9 +108,6 @@ shh --quiet
 
 # Verbose output (overrides quiet_mode config)
 shh --verbose
-
-# Launch the Textual TUI
-shh tui
 ```
 
 ### Testing
@@ -256,17 +240,9 @@ Platform-specific paths via `platformdirs`:
 - **Selection**: `RichUI` unless `Settings.quiet_mode` is true or `--quiet` is passed.
 - **Adding a new UI**: implement every method of `UIOutput` (`show_error`, `show_recording_progress`, `show_result`, `cleanup`, …) in a new class — no base class to extend.
 
-### TUI (Textual)
-
-- **Entry point**: `shh tui` (wired in `shh/cli/commands/tui.py`), or `python -m shh.tui.app` for development.
-- **Dependency**: `textual` is an **optional extra** — install with `pip install shh-cli[tui]` (or `[dev]` includes it).
-- **Architecture**: `ShhTUI` (Textual `App`) hosts `RecordingScreen` and `SettingsScreen`. It consumes `RecordingService` directly — no duplicated business logic.
-- **Debug**: `textual run --dev shh/tui/app.py:ShhTUI` (shows layout overlay).
-- **Currently untracked** in git; see TUI_README.md for the feature roadmap.
-
 ### CLI Entry Point Pattern
 
-- `shh/cli/app.py` uses Typer's `@app.callback(invoke_without_command=True)` so that the bare `shh` command runs the default record flow while still allowing `shh setup`, `shh config`, `shh record`, `shh tui` subcommands.
+- `shh/cli/app.py` uses Typer's `@app.callback(invoke_without_command=True)` so that the bare `shh` command runs the default record flow while still allowing `shh setup`, `shh config`, `shh record` subcommands.
 
 ### Error Handling
 
@@ -284,15 +260,15 @@ Platform-specific paths via `platformdirs`:
 1. **Full type hints**: Every function must have complete type annotations.
 2. **Pass mypy strict**: `mypy --strict shh/` must pass before committing.
 3. **Clean up temp files**: Use `try/finally` to ensure WAV files are deleted.
-4. **Layer boundaries**: `CLI / TUI → Services → (Core + Adapters)`. Never the reverse.
+4. **Layer boundaries**: `CLI → Services → (Core + Adapters)`. Never the reverse.
 5. **Structured outputs**: Use Pydantic models for all LLM responses.
-6. **Share via services**: New record/transcribe/format logic goes in `services/`, not in a command or a screen.
+6. **Orchestration in services**: New record/transcribe/format logic goes in `services/`, not in a command.
 
 ### MUST NOT Do
 
-- Import `typer` / `rich` / `textual` in `core/`, `adapters/`, or `services/`.
-- Import `cli/` or `tui/` from `services/`, `core/`, or `adapters/`.
-- Duplicate orchestration logic in a Typer command **and** a Textual screen — call `RecordingService` from both.
+- Import `typer` / `rich` in `core/`, `adapters/`, or `services/`.
+- Import `cli/` from `services/`, `core/`, or `adapters/`.
+- Put orchestration logic directly in a Typer command — call `RecordingService` instead.
 - Leave temp WAV files on disk after transcription.
 - Skip type hints or use `Any` without justification.
 - Commit code that fails `mypy --strict` or `ruff check`.
@@ -301,14 +277,13 @@ Platform-specific paths via `platformdirs`:
 
 ### Adding a New Feature
 
-1. **Plan**: Identify which layer owns the logic (CLI / TUI / Services / Core / Adapters).
+1. **Plan**: Identify which layer owns the logic (CLI / Services / Core / Adapters).
 2. **Write tests first**: Unit tests for services and adapters, integration tests for end-to-end flows.
-3. **Implement**: Follow layer boundaries strictly. Business logic belongs in `services/`.
-4. **Wire both UIs**: If the feature is user-facing, expose it from both the CLI command and the TUI screen.
-5. **Type check**: Run `uv run poe type`.
-6. **Lint**: Run `uv run poe lint` (or `uv run poe fix` to auto-fix).
-7. **Test**: Run `uv run poe test` to ensure all tests pass.
-8. **Document**: Update CLAUDE.md if architectural changes were made.
+3. **Implement**: Follow layer boundaries strictly. Orchestration belongs in `services/`.
+4. **Type check**: Run `uv run poe type`.
+5. **Lint**: Run `uv run poe lint` (or `uv run poe fix` to auto-fix).
+6. **Test**: Run `uv run poe test` to ensure all tests pass.
+7. **Document**: Update CLAUDE.md if architectural changes were made.
 
 ### Before Committing
 
@@ -343,7 +318,6 @@ See `.roadmap.md` for:
 
 - [PydanticAI Documentation](https://ai.pydantic.dev/)
 - [Typer Documentation](https://typer.tiangolo.com/)
-- [Textual Documentation](https://textual.textualize.io/)
 - [OpenAI Whisper API](https://platform.openai.com/docs/guides/speech-to-text)
 - [Rich Documentation](https://rich.readthedocs.io/)
 - [sounddevice Documentation](https://python-sounddevice.readthedocs.io/)
