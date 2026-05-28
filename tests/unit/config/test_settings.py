@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import pytest
+from pydantic import ValidationError
 
 from shh.config.settings import Settings, WhisperModel
 from shh.core.styles import TranscriptionStyle
@@ -97,3 +98,27 @@ def test_settings_enum_validation() -> None:
 
     with pytest.raises(ValueError):
         Settings(whisper_model="gpt-4")  # type: ignore[arg-type]
+
+
+def test_settings_history_defaults() -> None:
+    settings = Settings()
+    assert settings.history_enabled is True
+    assert settings.history_retention == 200
+
+
+def test_settings_history_retention_bounds_lower() -> None:
+    with pytest.raises(ValidationError):
+        Settings(history_retention=0)
+
+
+def test_settings_history_retention_bounds_upper() -> None:
+    with pytest.raises(ValidationError):
+        Settings(history_retention=20_000)
+
+
+def test_get_history_path_alongside_settings(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fake_settings = tmp_path / "shh" / "settings.json"
+    monkeypatch.setattr(Settings, "get_config_path", classmethod(lambda cls: fake_settings))
+    assert Settings.get_history_path() == fake_settings.parent / "history.jsonl"

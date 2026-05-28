@@ -3,7 +3,8 @@
 import logging
 import sys
 
-from shh.cli.ui import QuietUI, RichUI, UIOutput
+from shh.adapters.history.store import HistoryStore
+from shh.cli.ui import PipeUI, QuietUI, RichUI, UIOutput
 from shh.cli.ui.base import RecordingProgress, TranscriptionResult
 from shh.config.settings import Settings
 from shh.core.models import RecordingOptions
@@ -15,25 +16,18 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("openai").setLevel(logging.WARNING)
 
 
-def _get_ui(quiet: bool, verbose: bool, settings: Settings) -> UIOutput:
+def _select_ui(*, quiet: bool, verbose: bool, quiet_default: bool) -> UIOutput:
+    """Pick the UI based on TTY + flags.
+
+    - Not a TTY -> PipeUI (minimal stdout, errors to stderr).
+    - --quiet or config quiet_mode (without --verbose override) -> QuietUI.
+    - Default -> RichUI.
     """
-    Determine which UI to use based on flags and config.
-    
-    Priority: verbose flag > quiet flag > config setting
-    
-    Args:
-        quiet: Force quiet mode
-        verbose: Force verbose mode
-        settings: User settings
-        
-    Returns:
-        UIOutput instance (RichUI or QuietUI)
-    """
-    if verbose:
-        return RichUI()
-    if quiet:
+    if not sys.stdout.isatty():
+        return PipeUI()
+    if quiet or (quiet_default and not verbose):
         return QuietUI()
-    return QuietUI() if settings.quiet_mode else RichUI()
+    return RichUI()
 
 
 async def record_command(
@@ -41,6 +35,7 @@ async def record_command(
     translate: str | None = None,
     quiet: bool = False,
     verbose: bool = False,
+    no_history: bool = False,
 ) -> None:
     """
     Record audio, transcribe, and optionally format/translate.
@@ -50,12 +45,14 @@ async def record_command(
         translate: Target language for translation
         quiet: Force minimal output (overrides config)
         verbose: Force rich UI (overrides config)
+        no_history: Skip persisting this transcription to history
     """
     # Load settings
     settings = Settings.load_from_file()
     if not settings or not settings.openai_api_key:
-        # For error message, default to Rich UI unless quiet explicitly set
-        ui: UIOutput = QuietUI() if quiet else RichUI()
+        # For error message, use TTY-aware selection with settings default
+        quiet_default = settings.quiet_mode if settings else False
+        ui = _select_ui(quiet=quiet, verbose=verbose, quiet_default=quiet_default)
         ui.show_error(
             "No API key found.",
             "Run 'shh setup' to configure your OpenAI API key.",
@@ -65,10 +62,14 @@ async def record_command(
     # Use provided options or fall back to config defaults
     formatting_style = style if style is not None else settings.default_style
     target_language = translate if translate is not None else settings.default_translation_language
-    ui = _get_ui(quiet, verbose, settings)
+    ui = _select_ui(quiet=quiet, verbose=verbose, quiet_default=settings.quiet_mode)
 
     # Create service
-    service = RecordingService(settings)
+    store = HistoryStore(
+        path=Settings.get_history_path(),
+        retention=settings.history_retention,
+    )
+    service = RecordingService(settings=settings, ui=ui, history_store=store)
     options = RecordingOptions(
         style=formatting_style,
         translate=target_language,
@@ -92,18 +93,8 @@ async def record_command(
             ui.show_warning("No audio recorded.")
             sys.exit(1)
 
-        # Processing phases
-        ui.show_processing_step("Saving audio...")
-        ui.show_processing_step("Transcribing with Whisper...")
-
-        if formatting_style != TranscriptionStyle.NEUTRAL or target_language:
-            if target_language:
-                ui.show_processing_step(f"Formatting and translating to {target_language}...")
-            else:
-                ui.show_processing_step(f"Formatting ({formatting_style})...")
-
         # Transcribe and format
-        result = await service.transcribe_and_format(audio_data, options)
+        result = await service.transcribe_and_format(audio_data, options, skip_history=no_history)
 
         # Display result
         ui.show_result(

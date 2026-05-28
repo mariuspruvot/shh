@@ -23,6 +23,8 @@ VALID_KEYS = {
     "show_progress": [True, False],
     "quiet_mode": [True, False],
     "whisper_model": list(WhisperModel),
+    "history_enabled": [True, False],
+    "history_retention": None,  # int, validated by Pydantic ge=1 le=10_000
 }
 
 
@@ -57,6 +59,8 @@ def config_show() -> None:
     table.add_row("quiet_mode", str(settings.quiet_mode))
     table.add_row("whisper_model", str(settings.whisper_model))
     table.add_row("default_output", ", ".join(settings.default_output))
+    table.add_row("history_enabled", str(settings.history_enabled))
+    table.add_row("history_retention", str(settings.history_retention))
 
     config_path = Settings.get_config_path()
     console.print()
@@ -113,7 +117,7 @@ def config_set(key: str, value: str) -> None:
         raise typer.Exit(code=1)
 
     # Validate and convert value
-    typed_value: TranscriptionStyle | WhisperModel | bool | str | None
+    typed_value: TranscriptionStyle | WhisperModel | bool | str | int | None
 
     if key == "default_style":
         try:
@@ -144,6 +148,21 @@ def config_set(key: str, value: str) -> None:
             valid_models = [m.value for m in WhisperModel]
             console.print(f"[dim]Valid models: {', '.join(valid_models)}[/dim]")
             raise typer.Exit(code=1) from e
+    elif key == "history_enabled":
+        if value.lower() not in ("true", "false"):
+            console.print("[red]Error: history_enabled must be 'true' or 'false'[/red]")
+            raise typer.Exit(code=1)
+        typed_value = value.lower() == "true"
+    elif key == "history_retention":
+        try:
+            int_value = int(value)
+        except ValueError as e:
+            console.print("[red]Error: history_retention must be an integer[/red]")
+            raise typer.Exit(code=1) from e
+        if not (1 <= int_value <= 10_000):
+            console.print("[red]Error: history_retention must be between 1 and 10000[/red]")
+            raise typer.Exit(code=1)
+        typed_value = int_value
     else:
         typed_value = value
 

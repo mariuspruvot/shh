@@ -43,6 +43,16 @@ class Settings(BaseSettings):
     )
     whisper_model: WhisperModel = Field(default=WhisperModel.WHISPER_1)
     default_output: list[str] = Field(default_factory=lambda: ["clipboard", "stdout"])
+    history_enabled: bool = Field(
+        default=True,
+        description="Persist transcriptions to history.jsonl.",
+    )
+    history_retention: int = Field(
+        default=200,
+        ge=1,
+        le=10_000,
+        description="Maximum entries kept in history before rotation.",
+    )
 
     @classmethod
     def get_config_path(cls) -> Path:
@@ -57,6 +67,11 @@ class Settings(BaseSettings):
         config_dir = Path(user_config_dir("shh"))
         config_dir.mkdir(parents=True, exist_ok=True)
         return config_dir / "settings.json"
+
+    @classmethod
+    def get_history_path(cls) -> Path:
+        """Path to the transcription history JSONL file."""
+        return cls.get_config_path().parent / "history.jsonl"
 
     @classmethod
     def load_from_file(cls) -> "Settings | None":

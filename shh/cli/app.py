@@ -6,6 +6,7 @@ from typing import Annotated
 import typer
 
 from shh.cli.commands.config import config_app
+from shh.cli.commands.history import history_app
 from shh.cli.commands.record import record_command
 from shh.cli.commands.setup import setup_command
 from shh.core.styles import TranscriptionStyle
@@ -19,6 +20,7 @@ app = typer.Typer(
 
 # Add config subcommand group
 app.add_typer(config_app, name="config")
+app.add_typer(history_app, name="history")
 
 
 @app.command(name="setup")
@@ -62,6 +64,13 @@ def default_command(
             help="Rich UI output (overrides config default)",
         ),
     ] = False,
+    no_history: Annotated[
+        bool,
+        typer.Option(
+            "--no-history",
+            help="Do not persist this transcription to history.",
+        ),
+    ] = False,
 ) -> None:
     """Record audio and transcribe. Press Enter to stop."""
     # If a subcommand was invoked, don't run the default
@@ -69,7 +78,15 @@ def default_command(
         return
 
     # Run the async record command
-    asyncio.run(record_command(style=style, translate=translate, quiet=quiet, verbose=verbose))
+    asyncio.run(
+        record_command(
+            style=style,
+            translate=translate,
+            quiet=quiet,
+            verbose=verbose,
+            no_history=no_history,
+        )
+    )
 
 
 def main() -> None:
